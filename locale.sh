@@ -1,7 +1,7 @@
 #!/bin/bash
 #for UTF-8
-#coun="en_US"; enc="UTF-8"; enc2="utf8"; ling="en"; kbd="us"; cons="ter-v16b"; dump=""
-coun="pl_PL"; enc="UTF-8"; enc2="utf8"; ling="pl"; kbd="pl2"; cons="ter-v16b"; dump="ISO-8859-2"
+#coun="en_US"; enc="UTF-8"; enc2="utf8"; ling="en"; kbd="us"; cons="ter-v32b"; dump=""
+coun="pl_PL"; enc="UTF-8"; enc2="utf8"; ling="pl"; kbd="pl2"; cons="ter-v32b"; dump="ISO-8859-2"
 localedef -i ${coun} -f ${enc} "${coun}.${enc}"
 sed -e "s@LANG='.*'@LANG='${coun}.${enc2}'@g" /etc/profile.env > t && mv t /etc/profile.env
 sed -e "s@LANG '.*'@LANG '${coun}.${enc2}'@g" /etc/profile.csh > t && mv t /etc/profile.csh
