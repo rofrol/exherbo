@@ -1,6 +1,6 @@
 #!/bin/bash
 export part="sda2"
-export proj="/mnt/storage/projects/exherbo"
+export proj="/mnt/storage/projects/exline"
 export distro="exherbo"
 export arch="amd64"
 export backup="/mnt/storage/backup"
