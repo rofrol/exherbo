@@ -75,14 +75,15 @@ eclectic env update
 export PS1="(chroot) $PS1"
 #do not sync before paludis -i paludis
 paludis -i paludis
-paludis --sync
+paludis -s
 #unset needed for sysrescuecd, or zsh
 unset path && paludis -i sydbox
 paludis -i glibc
 #python fails, add 
 #labels have changes, or backup ndbam and replace s/build,run/build+run/
 #rm -R /var/cache/paludis/metadata/* && 
-paludis -ip everything --dl-reinstall if-use-changed --dl-upgrade always 2>&1 | tee ${proj}/temp/e.log
+#The 'everything' set is deprecated. Use either 'installed-packages' or 'installed-slots' instead
+paludis -ip installed-packages --dl-reinstall if-use-changed --dl-upgrade always 2>&1 | tee ${proj}/temp/e.log
 #--dl-suggested install
 #add repo hardware
 #options already copied
