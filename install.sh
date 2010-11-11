@@ -60,6 +60,13 @@ cp ${proj}/conf/etc/fstab /mnt/${distro}/etc && cp ${proj}/conf/etc/conf.d/clock
 mount -o bind ${proj}/temp/distfiles /mnt/${distro}/var/cache/paludis/distfiles
 #rsync -vaHW ${proj}/temp/distfiles/ /mnt/exherbo/var/cache/paludis/distfiles
 
+#set hostname
+elinks http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=1&chap=8
+vim /etc/conf.d/hostname
+#set domainname dns_domain_lo="homenetwork"
+vim /etc/conf.d/net
+
+
 #for rechroot
 mount -o rbind /dev /mnt/${distro}/dev/ && mount -o bind /sys /mnt/${distro}/sys/ && mount -t proc none /mnt/${distro}/proc/ && cp -L /etc/resolv.conf /mnt/${distro}/etc/resolv.conf && grep -v rootfs /proc/mounts > /mnt/${distro}/etc/mtab; mount | grep ${distro}
 

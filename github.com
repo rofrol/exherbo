@@ -1,3 +1,6 @@
+set ssh
+http://help.github.com/linux-key-setup/
+
 Global setup:
 
   Download and install Git
