@@ -1,21 +1,24 @@
 #!/bin/bash
+date
 declare -x SCRIPTPATH="${0}"
+echo "SCRIPTPATH="$SCRIPTPATH
 declare -x RUNDIRECTORY="${0%%/*}"
 declare -x SCRIPTNAME="${0##*/}"
+echo "SCRIPTNAME="$SCRIPTNAME
 if [ "$RUNDIRECTORY" == "$SCRIPTNAME" ]; then
    RUNDIRECTORY="."
 fi
+echo "RUNDIRECTORY="$RUNDIRECTORY
 
 . $(pwd)/conf.sh
-
 #sh mounted.sh; sh time_host.sh; sh wpa_supplicant.sh
 #run 19th line: #sh install.sh 19
 if [ ${1} -gt 0 ];then
  o=`eval "sed '${1}q;d' ${SCRIPTPATH}"`
- p=`echo $o | sed -e "s@\\${part}@${part}@g" -e "s@\\${distro}@${distro}@g" -e "s@\\${arch}@${arch}@g" -e "s@\\${indate}@${indate}@g" -e "s@\\${proj}@${proj}@g" -e "s@\\${backup}@${backup}@g"`
+ p=`echo $o | sed -e "s@\\${part}@${part}@g" -e "s@\\${distro}@${distro}@g" -e "s@\\${arch}@${arch}@g" -e "s@\\${indate}@${indate}@g" -e "s@\\${proj}@${proj}@g" -e "s@\\${backup}@${backup}@g" -e "s@\\${KERNEL_VERSION}@${KERNEL_VERSION}@g" -e "s@\\${projname}@${projname}@g"`
  yn "${p}"
  eval "time (${p})";
- if [ $debug -eq 1 ]; then echo -e '\a'; sleep 1; echo -e '\a'; sleep 1; echo -e '\a'; fi
+ if [ $beeper -eq 1 ]; then echo -e '\a'; sleep 1; echo -e '\a'; sleep 1; echo -e '\a'; fi
 fi
 exit
 #http://wooledge.org:8000/BashFAQ
@@ -26,20 +29,22 @@ exit
 #http://tldp.org/LDP/abs/html/exit-status.html
 
 #bell
-modprobe pcspkr
+##modprobe pcspkr
 
 #while is for case, when you have mounted more then one time, or faster umount -l, fuser -mv /mnt/${distro}; kill -9 <pid>
 #while [ `mount | grep ${distro} | wc -l` -gt 0 ] ; do umount -l /mnt/${distro}/dev; umount /mnt/${distro}/{dev,proc,sys,,mnt/usb}; done
 
 #sleep 3 needed for detach
 #sometimes only reboot or umount -l /mnt/point will help. even fuser or lsof might not help, when they can't see some kernel processes http://forums.gentoo.org/viewtopic-t-528830.html
-umount -l /mnt/${distro}/dev; sleep 3; umount /mnt/${distro}/{dev,proc,sys,var/cache/paludis/distfiles,mnt/storage,}; sh mounted.sh
+##umount -l /mnt/${distro}/dev; sleep 3; umount /mnt/${distro}/{dev,proc,sys,var/cache/paludis/distfiles,mnt/storage,}; sh mounted.sh
 
-#mkfs.btrfs -L ${distro} /dev/${part}
+##mkfs.btrfs -L ${distro} /dev/${part}
 # -c for badblocks
-mkfs.ext3 -L ${distro} /dev/${part}
+##mkfs.ext3 -L ${distro} /dev/${part}
+mkfs.ext4 -L ${distro} /dev/${part}
 
-[ ! -d /mnt/${distro} ] && mkdir /mnt/${distro}; [ -d /mnt/${distro} ] && mount -L ${distro} /mnt/${distro}; mount | grep ${distro}
+#if dir doesn't exist, create; if dir exists mount;
+[ ! -d /mnt/${distro} ] && mkdir /mnt/${distro}; [ -d /mnt/${distro} ] && mount -L ${distro} /mnt/${distro} && mount | grep ${distro}
 
 elinks http://dev.exherbo.org/stages/
 cd ${proj}/temp && wget http://dev.exherbo.org/stages/exherbo-${arch}-current.tar.xz
@@ -52,65 +57,148 @@ cd ${proj}/temp && LC_ALL=C sha1sum -c sha1sum 2>/dev/null | grep "exherbo-${arc
 #new tar support xz
 tar -vpxaf ${proj}/temp/exherbo-${arch}-current.tar.xz -C /mnt/${distro}
 
-cp ${proj}/conf/etc/fstab /mnt/${distro}/etc && cp ${proj}/conf/etc/conf.d/clock /mnt/${distro}/etc/conf.d/ && cp -L /mnt/${distro}/usr/share/zoneinfo/Europe/Warsaw /mnt/${distro}/etc/localtime && cp ${proj}/conf/etc/paludis/bashrc-${arch} /mnt/${distro}/etc/paludis/bashrc
+cp -L ${proj}/Warsaw /mnt/${distro}/etc/localtime
+
+
+##cp ${proj}/conf/etc/fstab /mnt/${distro}/etc && cp ${proj}/conf/etc/conf.d/clock /mnt/${distro}/etc/conf.d/ && cp -L /mnt/${distro}/usr/share/zoneinfo/Europe/Warsaw /mnt/${distro}/etc/localtime && cp ${proj}/conf/etc/paludis/bashrc-${arch} /mnt/${distro}/etc/paludis/bashrc
 
 #if not exist create and mount, else mount
-[ ! -d /mnt/${distro}/mnt/storage ] && mkdir /mnt/${distro}/mnt/storage; [ -d /mnt/${distro}/mnt/storage ] && mount -o bind /mnt/storage /mnt/${distro}/mnt/storage; mount | grep bind
+##[ ! -d /mnt/${distro}/mnt/storage ] && mkdir /mnt/${distro}/mnt/storage; [ -d /mnt/${distro}/mnt/storage ] && mount -o bind /mnt/storage /mnt/${distro}/mnt/storage; mount | grep bind
+[ ! -d /mnt/${distro}/mnt/${projname} ] && mkdir /mnt/${distro}/mnt/${projname}; [ -d /mnt/${distro}/mnt/${projname} ] && mount -o bind /mnt/${projname} /mnt/${distro}/mnt/${projname} && mount | grep bind
 
-mount -o bind ${proj}/temp/distfiles /mnt/${distro}/var/cache/paludis/distfiles
+##mount -o bind ${proj}/temp/distfiles /mnt/${distro}/var/cache/paludis/distfiles
 #rsync -vaHW ${proj}/temp/distfiles/ /mnt/exherbo/var/cache/paludis/distfiles
 
 #set hostname
-elinks http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=1&chap=8
-vim /etc/conf.d/hostname
+##elinks http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=1&chap=8
+##vim /etc/conf.d/hostname
 #set domainname dns_domain_lo="homenetwork"
-vim /etc/conf.d/net
+##vim /etc/conf.d/net
 
+
+#error:
+#grep: writing output: Invalid argument
+#but etc/mtab is written
 
 #for rechroot
 mount -o rbind /dev /mnt/${distro}/dev/ && mount -o bind /sys /mnt/${distro}/sys/ && mount -t proc none /mnt/${distro}/proc/ && cp -L /etc/resolv.conf /mnt/${distro}/etc/resolv.conf && grep -v rootfs /proc/mounts > /mnt/${distro}/etc/mtab; mount | grep ${distro}
 
-#this doesn't work
-#env -i TERM=$TERM SHELL=/bin/bash HOME=$HOME chroot /mnt/${distro} /bin/bash
-
-chroot /mnt/${distro} /bin/bash
+##chroot /mnt/${distro} /bin/bash
+env -i TERM=$TERM SHELL=/bin/bash HOME=$HOME chroot /mnt/${distro} /bin/bash
 
 # chrooted #####################################################################
-
 date
-sh ${proj}/locale.sh
+
+#by hand
+#. /etc/profile #doesn't work inside vmware
+source /etc/profile
+export PS1="(chroot) $PS1"
+
+#by hand
+cd /etc/paludis && vim bashrc && vim *conf
+
+#paludis changed its config files, so it's irrelevant
+##sh ${proj}/locale.sh
 
 #glib failed to update, chrooted from sysrescuecd, use ubuntu live
-unset path
+##unset path
+
 passwd
 
 #not in install guide
 #eclectic env update
 
-#source doesn't work, only for script env
-#source /etc/profile
-export PS1="(chroot) $PS1"
+#needed by paludis, pulls dev-lang/tcl -> dev-tcl/expect -> dev-util/dejagnu -> dev-libs/libffi -> dev-lang/python -> app-doc/asciidoc, app-text/docbook-xml-dtd -> app-doc/asciidoc
+cave resolve -x asciidoc
+
+#needed by paludis
+cave resolve -x xmlto
+
 #do not sync before cave resolve -x paludis
 #40 min
+#i got error: x86_64-pc-linux-gnu-g++: Internal error: Killed (program cc1plus)
+#solved by 1GB RAM for VMWare Machine with sysrescuecd running
 cave resolve -x1 paludis
 cave sync
 
 eclectic config interactive
+
+#function yn doesn't work with below
+#cd temp & wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-${KERNEL_VERSION}.tar.bz2
+
+######################### systemd
+
+echo '*/* systemd' >> /etc/paludis/options.conf
+
+#for sys-auth/ConsoleKit -> sys-apps/dbus
+cave resolve repository/desktop -x
+#for x11-libs/libX11 -> sys-auth/ConsoleKit
+cave resolve repository/x11 -x
+cave resolve -x sys-apps/systemd
+cave resolve world -cx
+eclectic init set systemd
+
+#grub
+#set options for systemd as described here http://www.mailstation.de/wordpress/?p=48
+#vmware options described here http://en.gentoo-wiki.com/wiki/VMware_Guest#Kernel_options
+#vmware installation described here http://en.gentoo-wiki.com/wiki/VMware_Workstation
+#supergrubdisk http://www.supergrubdisk.org/super-grub2-disk/
+#change vmware machine to 1024 MB, 512 MB isn't sufficient, change boot order for vmware machine with F2 (fn+F2 on macbook) or ESC to change ordering temporarily
+#nice grub2 guide https://help.ubuntu.com/community/Grub2
+#guid booting http://docs.funtoo.org/wiki/GUID_Booting_Guide
+
+#enable fuse and ext4
+#ext4 options described here http://en.gentoo-wiki.com/wiki/Ext4#Configuring_the_kernel
+
+cd /mnt/${projname}/temp && wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-${KERNEL_VERSION}.tar.bz2
+cd /mnt/${projname}/temp && tar xvjf linux-${KERNEL_VERSION}.tar.bz2 -C /usr/src
+cd /usr/src/linux-${KERNEL_VERSION} && make menuconfig
+cd /usr/src/linux-${KERNEL_VERSION} && time make && make modules_install && cp arch/x86/boot/bzImage /boot/kernel
+grub-install /dev/sda
+cp /mnt/${projname}/grub.cfg /boot/grub/
+
+ln -sf /proc/self/mounts /etc/mtab
+
+localedef -i pl_PL -f UTF-8 pl_PL.UTF-8
+
+#start network by hand
+ifconfig eth0 up && dhcpcd eth0 && ping -c 3 wp.pl
+
+#eth0 isn't upped
+#systemctl enable dhcpcd.service
+
+#dhcpcd already installed
+#cave resolve wpa_supplicant -x
+#after reboot?
+#systemctl start NetworkManager.service
+
+#for fuse-sshfs
+cave resolve repository/maww -x
+#for fuse
+cave resolve repository/pioto -x
+cave resolve sshfs -x
+
+cave resolve tree -x
+
+
+
+
+
 #unset needed for sysrescuecd or zsh
-unset path && cave resolve -x sydbox
-cave resolve -x glibc
+##unset path && cave resolve -x sydbox
+##cave resolve -x glibc
 #python fails, add
 #labels have changes, or backup ndbam and replace s/build,run/build+run/
 #rm -R /var/cache/paludis/metadata/* &&
 #The 'everything' set is deprecated. Use either 'installed-packages' or 'installed-slots' instead
-cave resolve installed-packages --dl-upgrade always --continue-on-failure if-independent 2>&1 | tee ${proj}/temp/e.log
+##cave resolve installed-packages --dl-upgrade always --continue-on-failure if-independent 2>&1 | tee ${proj}/temp/e.log
 #--suggestions take
 #--dl-reinstall if-use-changed
 
 #adding repo with cave
 #someone mistakenly named file
 #config_template '/etc/paludis/repository.template' is not a regular file (paludis::ConfigurationError)
-mv /etc/paludis/repository.template\: /etc/paludis/repository.template
+##mv /etc/paludis/repository.template\: /etc/paludis/repository.template
 
 #add ssl or gnutls option to have encryption, it seems that ssl was enabled already
 #echo "net-wireless/wpa_supplicant ssl" >> /etc/paludis/options.conf
