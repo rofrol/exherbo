@@ -1,0 +1,8 @@
+wget https://raw.github.com/nkulikov/mc-solarized-skin/master/solarized.ini 
+# or /usr/share/mc/skins
+mkdir -p ~/.local/share/mc/skins
+mv solarized.ini ~/.local/share/mc/skins/
+
+in ~/.config/mc/ini
+[Midnight-Commander]
+skin=solarized
