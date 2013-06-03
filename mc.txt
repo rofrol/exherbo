@@ -6,3 +6,7 @@ mv solarized.ini ~/.local/share/mc/skins/
 in ~/.config/mc/ini
 [Midnight-Commander]
 skin=solarized
+
+#what files mc opened
+#strace -e trace=open -o mclog -f mc
+#http://superuser.com/questions/532784/midnight-commander-doesnt-use-mc-ini-file
