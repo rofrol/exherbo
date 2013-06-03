@@ -64,3 +64,4 @@ x11-apps/nitrogen
 media-libs/libvorbis
 app-arch/unrar
 dev-util/strace
+virtual/jdk
