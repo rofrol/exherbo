@@ -694,3 +694,6 @@ cave show */*::/
 elinks /usr/share/doc/paludis-scm/index.html
 
 #when i got error about paludis and labels change, i get stderr stdout stderr, instead of stderr stdout. Solution to this is paludis -i <package> 2>&1 | tee or /usr/share/paludis/hooks/demos/elog.bash
+
+#virtual
+#to choose not the prefered on: echo "cat/package" >> /etc/paludis/package_mask.conf

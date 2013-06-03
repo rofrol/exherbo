@@ -1,0 +1,424 @@
+== links ==
+
+* http://www.exherbo.org/docs/exheres-for-smarties.html
+* http://paludis.exherbo.org/configuration/use.html
+* /var/db/paludis/repositories/installed/world
+* man cave-resolve
+
+
+== NetworkManager not populating resolv.conf ==
+
+Use following command and answer YES to enable dynamic updates:
+
+  sudo dpkg-reconfigure resolvconf
+
+http://askubuntu.com/questions/137037/networkmanager-not-populating-resolv-conf/172517#172517
+
+== gpg linux kernel ==
+
+=== download ===
+
+  gpg --recv-keys 6092693E
+
+if above doesn't work (firewall etc.)
+  gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6092693E
+
+show key
+  gpg --fingerprint 6092693E
+
+these didn't worked:
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 6092693E
+  gpg --keyserver wwwkeys.de.pgp.net:80 --recv-keys 6092693E
+
+Alternative: Go here http://wwwkeys.pgp.net:11371/pks/loo...rch=0x517D0F0E
+Copy and paste the key into a file, say, kernel.key. Then import it using
+  gpg --import kernel.key
+
+[https://www.kernel.org/signature.html]
+[http://superuser.com/questions/64922/how-to-work-around-blocked-outbound-hkp-port-for-apt-keys]
+[http://www.linuxquestions.org/questions/linux-general-1/how-to-verify-downloaded-kernel-integrity-with-%2A-sign-files-346466/#post1764786]
+
+=== check ===
+
+  xz -cd linux-3.9.3.tar.xz | gpg --verify linux-3.9.3.tar.sign -
+
+=== no bc ===
+
+  cave resolve -x bc
+
+=== uefi or bios ===
+
+  [ -d /sys/firmware/efi ] && echo UEFI || echo BIOS
+
+[http://askubuntu.com/questions/162564/how-can-i-tell-if-my-system-was-booted-as-efi-uefi-or-bios/162896#162896]
+
+== cave resolve world -cx ==
+
+== glib and python ==
+dev-libs/glib needs python repo if recommended_tests is set
+  cat /var/db/paludis/repositories/arbor/packages/dev-libs/glib/glib-2.36.2.exheres-0
+
+cave resolve repository/python -x
+
+! gnome-bindings/pygobject
+    Reasons: dev-libs/glib-2.36.2:2::arbor (test), dev-python/dbus-python-1.2.0:0::python (test)
+
+  cave resolve repository/gnome -x
+
+!   x11-misc/shared-mime-info
+    Reasons: dev-libs/glib-2.36.2:2::arbor (test)
+
+cave resolve repository/x11 -x
+
+
+=== Cannot proceed without: being reconfigured ===
+
+I cannot proceed without being permitted to do the following:
+
+u   dev-libs/libxml2:2.0::arbor 2.9.1 to ::installed replacing 2.9.0
+    Need changes for: python No changes needed: -doc -examples build_options: symbols=split jobs=8 -dwarf_compress recommended_tests -trace work=tidyup
+        Reasons requiring changes: restarted because of x11-dri/mesa-9.1.2:0::x11 Reasons: app-text/docbook-xml-dtd-4.2-r1:4.2::arbor, app-text/docbook-xml-dtd-4.3-r1:4.3::arbor, app-text/docbook-xml-dtd-4.4-r1:4.4::arbor, 6 more
+            Cannot proceed without: being reconfigured
+
+Solution:
+echo "dev-libs/libxml2 python" >> /etc/paludis/options.conf
+
+=== dependency cycle ===
+
+use --explain
+
+[11:08] <SardemFF7> Read at the end of the resolve: glib needs dbus-python and pygobject for tests
+[11:09] <SardemFF7> pygobject requires gobject-introspection
+[11:09] <SardemFF7> and gobject-introspection requires glib
+[11:10] <Caelian> SardemFF7: is obviously has better cave-fu than i do :))
+[11:10] <SardemFF7> Disable tests for glib, install it, reenable them, install it again, then update
+[11:11] <rofrol> SardemFF7: How did figuredthis out? I don't see this
+[11:14] <SardemFF7> Search for "I cannot provide a legal ordering for the following:"
+[11:14] <SardemFF7> This part is a summary of the cycle
+
+I cannot provide a legal ordering for the following:
+
+u   dev-libs/glib:2::arbor 2.36.2 to ::installed replacing 2.34.2 [cycle 4]
+    bash-completion -gtk-doc -man-pages build_options: symbols=split jobs=8 -dwarf_compress recommended_tests -trace work=tidyup
+    Reasons: dev-libs/dbus-glib-0.100.2:1::arbor, dev-libs/glib-networking-2.36.2:0::arbor, dev-util/desktop-file-utils-0.21-r1:0::arbor, 8 more
+    In unsolvable cycle with app-admin/eclectic:0, app-arch/xz:0, app-doc/gtk-doc-autotools:0, app-misc/ca-certificates:0, app-shells/bash:0, app-shells/bash-completion:0, app-text/build-docbook-catalog:0, app-text/docbook-xml-dtd:4.2, app-text/docbook-xml-dtd:4.3, app-text/docbook-xml-dtd:4.4, app-text/docbook-xsl-stylesheets:0, app-text/sgml-common:0, app-text/xmlto:0, dev-lang/perl:5.14, dev-lang/python:2.7, dev-lang/tcl:0, dev-libs/dbus-glib:1, dev-libs/glib:2, dev-libs/gmp:5, dev-libs/libffi:0, dev-libs/libgcrypt:0, dev-libs/libgpg-error:0, dev-libs/libusb:1, dev-libs/libxml2:2.0, dev-libs/libxslt:0, dev-libs/mpc:0, dev-libs/mpfr:3, dev-libs/pcre:0, dev-perl/Locale-gettext:0, dev-perl/XML-Parser:0, dev-python/dbus-python:0, dev-tcl/expect:0, dev-util/dejagnu:0, dev-util/desktop-file-utils:0, dev-util/elfutils:0, dev-util/intltool:0, dev-util/pkg-config:0, gnome-bindings/pygobject:3, gnome-desktop/gobject-introspection:1, media-libs/fontconfig:0, media-libs/libpng:0, net-misc/wget:0, sys-apps/attr:0, sys-apps/bc:0, sys-apps/coreutils:0, sys-apps/dbus:0, sys-apps/gawk:0, sys-apps/help2man:0, sys-apps/kbd:0, sys-apps/kmod:0, sys-apps/pciutils:0, sys-apps/pciutils-data:0, sys-apps/sed:0, sys-apps/systemd:0, sys-apps/texinfo:0, sys-apps/usbutils:0, sys-apps/usbutils-data:0, sys-apps/util-linux:0, sys-devel/autoconf:2.5, sys-devel/automake:1.11, sys-devel/automake:1.12, sys-devel/automake:1.13, sys-devel/binutils:0, sys-devel/bison:0, sys-devel/flex:0, sys-devel/gcc:4.7, sys-devel/gettext:0, sys-devel/libtool:0, sys-devel/m4:0, sys-libs/cracklib:0, sys-libs/glibc:0, sys-libs/libcap:0, sys-libs/libcap-ng:0, sys-libs/pam:0, sys-libs/zlib:0, virtual/pkg-config:0, virtual/usb:1, x11-dri/libdrm:0, x11-dri/mesa:0, x11-libs/cairo:0, x11-libs/libICE:0, x11-libs/libX11:0, x11-libs/libXau:0, x11-libs/libXdamage:0, x11-libs/libXdmcp:0, x11-libs/libXext:0, x11-libs/libXfixes:0, x11-libs/libXxf86vm:0, x11-libs/libxcb:0, x11-libs/pixman:1, x11-libs/xtrans:0, x11-misc/shared-mime-info:0, x11-proto/damageproto:0, x11-proto/dri2proto:0, x11-proto/fixesproto:0, x11-proto/glproto:0, x11-proto/inputproto:0, x11-proto/kbproto:0, x11-proto/xcb-proto:0, x11-proto/xextproto:0, x11-proto/xf86vidmodeproto:0, x11-proto/xproto:0, x11-utils/util-macros:0
+n   dev-python/dbus-python:0::python 1.2.0 to ::installed [cycle 4]
+    "Python bindings for the D-Bus messagebus"
+    build_options: symbols=split jobs=8 -dwarf_compress recommended_tests -trace work=tidyup
+    Reasons: dev-libs/glib-2.36.2:2::arbor (test)
+n   gnome-bindings/pygobject:3::gnome 3.8.2 to ::installed [cycle 4]
+    "Python Bindings for GObject"
+    -cairo build_options: symbols=split jobs=8 -dwarf_compress (-recommended_tests) -trace work=tidyup
+    Reasons: dev-libs/glib-2.36.2:2::arbor (test), dev-python/dbus-python-1.2.0:0::python (test)
+n   gnome-desktop/gobject-introspection:1::gnome 1.36.0 to ::installed [cycle 4]
+    "Tools for GIR"
+    -doctool -gtk-doc build_options: symbols=split jobs=8 -dwarf_compress recommended_tests -trace work=tidyup
+    Reasons: gnome-bindings/pygobject-3.8.2:3::gnome
+
+Solution:
+echo "dev-libs/glib build_options: -recommended_tests" >> /etc/paludis/options.conf
+
+
+=== Note about kernel headers ===
+
+maybe after download manualy kernel put it somewhere, so cave won't redownload it?
+
+=== mkdir: cannot create directory '/dev/shm': File exists ===
+
+mkdir: cannot create directory '/dev/shm': File exists
+
+!!! ERROR in sys-apps/skeleton-filesystem-layout-0.82::arbor:
+!!! In edo at line 1250
+!!! mkdir -p /dev/shm failed
+
+ls -ld /dev /dev/shm /run /run/shm
+ls: cannot access /run/shm: No such file or directory
+drwxr-xr-x 16 root root 4320 May 21 07:15 /dev
+lrwxrwxrwx  1 root root    8 May 10 11:51 /dev/shm -> /run/shm
+drwxr-xr-x  3 root root 4096 Feb 17 23:45 /run
+
+Solution:
+rm /dev/shm
+mkdir /dev/shm
+sudo chmod 1777 /dev/shm
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=683103
+
+=== invalid files ===
+
+cd /var/cache/paludis/distfiles/
+wget http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.32.tar.bz2
+wget --trust-server-names "http://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.9/libusb-1.0.9.tar.bz2/download"
+#wrong
+#wget --trust-server-names "http://sourceforge.net/projects/e2fsprogs/files/e2fsprogs/v1.42.7/e2fsprogs-libs-1.42.7.tar.gz/download"
+wget http://pkgs.fedoraproject.org/repo/pkgs/e2fsprogs/e2fsprogs-1.42.7.tar.gz/1af5399fdebb556312adceca8a7e25c9/e2fsprogs-1.42.7.tar.gz
+wget http://gitorious.org/procps/procps/archive-tarball/v3.3.7 -O procps-3.3.7.tar.gz
+
+#this one had to be installed separately
+cave resolve procps -x -1
+
+=== tests failed ===
+
+echo "sys-apps-util-linux build_options: -recommended_tests" >> /etc/paludis/options.conf
+echo "gnome-desktop/dconf build_options: -recommended_tests" >> /etc/paludis/options.conf
+echo "net-misc/curl build_options: -recommended_tests" >> /etc/paludis/options.conf
+
+== post install ==
+
+cave update-world app-arch/libarchive app-editors/vim app-editors/e4r app-text/wgetpaste net-misc/dhcpcd app-arch/zip sys-boot/grub
+cave purge -x
+
+== backup ==
+
+mkdir /mnt/orig
+mount / /mnt/orig -o bind
+tar -C /mnt/orig -cf /mnt/backup/mybackup_$(date -I).tar ./
+
+browse backup
+mksquashfs /mnt/orig/ /mnt/backup/mybackup.squashfs
+mkdir /mnt/squash
+mount /mnt/backup/mybackup.squashfs /mnt/squash -o loop
+
+http://unix.stackexchange.com/questions/11028/backup-whole-hard-disk-linux/11086#11086
+
+=== backup stats ===
+
+tar -C /mnt/orig -cf /mnt/backup/mybackup_$(date -I).tar ./
+tar: ./tmp/ssh-Osio7o3EgT/agent.15672: socket ignored
+tar: ./tmp/ssh-gNioKfLRXp/agent.15683: socket ignored
+
+real    4m8.210s
+user    0m0.680s
+sys 0m5.644s
+
+ls -lh backup/mybackup_2013-05-22.tar
+-rw-r--r-- 1 root root 2.1G maj 22 08:45 backup/mybackup_2013-05-22.tar
+
+== add repository
+
+cave resolve repository/alip -x
+
+http://www.exherbo.org/docs/faq.html#add_new_repositories
+
+== masked by repository scm
+
+echo "net-www/elinks scm" >> /etc/paludis/package_unmask.conf
+
+http://paludis.exherbo.org/configartion/packagemask.conf
+
+== xorg
+
+=== graphics card
+
+lspci | grep -i vga
+00:02.0 VGA compatible controller: Intel Corporation Xeon E3-1200 v2/3rd Gen Core processor Graphics Controller (rev 09)
+
+=== cave
+
+echo "*/* VIDEO_DRIVERS: intel" >> /etc/paludis/options.conf
+cave resolve xorg-server
+echo "x11-dri/libdrm VIDEO_DRIVERS: intel" >> /etc/paludis/options.conf
+cave resolve x11-dri/libdrm -1x
+cave resolve xorg-server x11-drivers/xf86-input-evdev x11-drivers/xf86-input-keyboard x11-drivers/xf86-input-mouse x11-drivers/xf86-video-intel
+X -retro
+
+cave resolve xinit --suggestions take -x
+#twm didn't work
+cave resolve fluxbox -x
+echo "exec fluxbox" >> ~/.xinitrc
+echo "xrdb ~/.Xresources" >>  ~/.xinitrc
+echo "x11-libs/cairo X" >> /etc/paludis/options.conf
+cave resolve cairo -x1
+startx
+
+fluxbox-generate-menu -h
+fluxbox-generate_menu -is -ds
+
+cave show net-www/*
+
+
+$HOME/.fluxbox/init
+session.screen0.toolbar.tools:  RootMenu, iconbar, systemtray, clock
+http://askubuntu.com/questions/151015/how-to-put-a-start-menu-button-on-fluxbox-toolbar
+
+
+https://github.com/solarized/xresources/blob/master/solarized
+
+
+== chromium-stable
+make -j8 -j1 DESTDIR=/var/tmp/paludis/build/app-speech-speechd-0.8/image/ install^M
+libtool: install: warning: remember to run `libtool --finish /usr/lib64'^M
+libtool: install: warning: `../../../src/api/c/libspeechd.la' has not been installed in `/usr/lib64'
+
+edit /var/db/paludis/repositories/media/packages/app-speech/speechd/speechd-0.8.exheres-0
+after
+src_install(){
+    default
+
+add
+    edo rmdir "${IMAGE}/usr/lib64/speech-dispatcher"
+
+cave resolve speechd -x
+
+time rsync -aHW --exclude 'backup' --exclude 'home' --exclude 'exherbo' --delete /mnt/ubuntu/ /mnt/ubuntu/backup/ubuntu_2013-05-24/
+
+== gpm
+
+cave resolve gpm
+systemctl enable gpm
+systemctl start gpm
+
+== rxvt
+
+http://blog.liangzan.net/blog/2012/01/19/my-solarized-themed-arch-linux-setup/
+git clone https://gist.github.com/1643690.git
+
+=== tabbed
+
+.Xresources or .Xdefaults
+URxvt.perl-ext-common: default,abbed
+http://unix.stackexchange.com/questions/821/is-there-a-light-weight-replacement-for-rxvt-unicode
+
+=== item in lxde menu
+
+/usr/share/applications/urxvt.desktop
+lub
+~/.local/share/applications/urxvt.desktop
+
+[Desktop Entry]
+Name=Urxvt
+Comment=Terminal emulator
+TryExec=urxvt
+Exec=urxvt
+Icon=terminal
+Type=Application
+Categories=GNOME;GTK;Utility;TerminalEmulator;System;
+StartupNotify=true
+
+http://wiki.gentoo.org/wiki/Rxvt-unicode
+
+=== fullscreen
+
+vim ~/.config/openbox/lxde-rc.xml
+<applications>
+...
+<application name="urxvt"><maximized>yes</maximized></application>
+</applications>
+
+http://unix.stackexchange.com/questions/46195/how-to-make-lxterminals-open-maximized-in-lubuntu-11-04
+
+=== tabs and keys
+
+http://superuser.com/questions/409900/urxvt-how-to-switch-among-tabs-like-other-emultaors
+
+=== fonts
+
+urxvt -fn 'xft:Droid Sans Mono:pixelsize=17:Regular'
+
+fonts put here:
+~/.fonts
+
+http://askubuntu.com/questions/22419/how-do-i-make-urxvt-render-xft-fonts
+http://wiki.gentoo.org/wiki/Fontconfig
+
+=== disable bold in urxvt
+
+URxvt.boldFont:
+http://unix.stackexchange.com/questions/38982/disable-bold-font-in-urxvt
+
+== tee
+./aaa 2>&1 | tee -a log.txt
+
+http://so/a/6991563
+
+cave import --location testkit-lite_2.3.5_all tizen/testkit-lite 2.3.5 0 --execute
+
+== dmenu
+cave resolve dmenu -x
+.fluxbox/keys
+Mod4 r :ExecCommand dmenu_run
+
+https://wiki.archlinux.org/index.php/Dmenu
+
+== tizen
+
+=== install
+
+chown -R :users /var/lib
+
+=== prepare target - not in sudoers
+
+visudo
+## Uncomment to allow members of group wheel to execute any command
+# %wheel ALL=(ALL) ALL 
+or
+echo 'rfrolow ALL=(ALL) ALL' >> /etc/sudoers
+
+chown -R :users /opt/testkit/lite/
+chown -R rfrolow:frolow /opt/testkit/lite/
+
+== lxde
+
+=== menu
+
+#!/bin/bash
+
+killall lxpanel
+find ~/.cache/menus -name '*' -type f -print0 | xargs -0 rm
+lxpanel -p LXDE &
+
+or
+
+lxpanelctl restart
+
+http://wiki.lxde.org/en/Main_Menu
+== mouse cursor
+http://gnome-look.org/content/show.php/DMZ?content=55210
+== firefox theme
+https://addons.mozilla.org/en-us/firefox/addon/zukitwo/
+https://addons.mozilla.org/pl/firefox/addon/zukitwo-gnome/
+
+http://askubuntu.com/questions/8336/how-can-one-make-firefox-ignore-my-gtk-theme-entirely
+
+== net
+
+  cd /etc/network
+  vi interfaces
+  i tam zamieniasz dhcp na static
+  i
+  dodajesz linijki
+  (pod iface)
+  address (twoje IP)
+netmask 255.255.255.0
+network 192.168.129.0
+broadcast 192.168.129.255
+  poxniej musisz zrestarowac iface
+
+ poxniej musisz zrestarowac iface
+  te zmainy dokonaj dla prawdopodobnie eth0 - czyli pierwszej karty sieciowej zwyklej
+  restart interfejsu sieciowego:
+sudo ifdown eth0
+sudo ifup eth0
+  wiem ze mozna jeszcze uzywajac service ale juz nie pamietam
+
+== hostname
+hostnamectl set-hostname AMDC1818
+
+== exherbo sets
+
+http://paludis.exherbo.org/configuration/sets.html
+
+== lxde shortcuts
+
+~/.config/openbox/lxde-rc.xml
+openbox --reconfigure --config-file ~/.config/openbox/lxde-rc.xm
+
+http://daveden.wordpress.com/2012/09/21/lubuntu-keyboard-shortcuts-cheat-sheet/
+http://unix.stackexchange.com/questions/43403/openbox-keybindings-not-taking-effect-after-reconfigure-or-restart
+http://openbox.org/wiki/Help:Actions
+http://melp.nl/2011/01/10-must-have-key-and-mouse-binding-configs-in-openbox/
+
+== libvorbis
+
+thanks to McGuyver
+http://paste.pound-python.org/raw/33375/
