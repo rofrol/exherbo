@@ -29,3 +29,42 @@ echo "run manually in every console: . /etc/profile"
 #grep -ir en_US /etc/
 #/usr/share/consolefonts/
 #enc2="$(echo ${enc} | sed -e 's/-//g' | tr [:upper:] [:lower:])"
+
+
+#the keyboard layout is set to US in vconsole.conf
+# https://galileo.mailstation.de/wordpress/?p=48
+# http://www.linuxfromscratch.org/lfs/view/systemd/
+# http://blog.fraggod.net/2010/11/05/from-baselayout-to-systemd-setup-on-exherbo.html
+
+# man vconsole.conf
+# man 8 setfont
+
+#some console fonts don't have a Unicode map, so they're essentially an
+# index -> glyph file where index is from 0-255. A unicode map adds a
+# "Unicode Code Point -> index" mapping.
+#
+# Most fonts in /usr/share/kbd/consolefonts should have bult-in maps
+# (haven't checked though). For those that don't have it, there's the -m
+# option in setfont or FONT_MAP.
+#
+# Without an unicode map, you must make sure the loaded font has the same
+# layout as the charset you're using. Without the unicode map you can't
+# use utf8
+# http://archlinux.2023198.n4.nabble.com/What-is-FONT-MAP-for-td4662578.html
+
+#https://wiki.archlinux.org/index.php/Fonts
+#https://bbs.archlinux.org/viewtopic.php?id=146743
+
+#cave resolve terminus-font
+
+#/etc/vconsole.conf
+#FONT="ter-v32b"
+#FONT_MAP=8859-2_to_uni
+#KEYMAP="pl2"
+#
+#systemctl restart systemd-vconsole-setup.service
+
+# https://wiki.archlinux.org/index.php/Xorg#Keyboard_settings
+
+#https://wiki.archlinux.org/index.php/Beginners%27_Guide_%28Polski%29
+#http://blog.fraggod.net/2010/11/05/from-baselayout-to-systemd-setup-on-exherbo.html
