@@ -1,3 +1,9 @@
+= Exherbo
+:toc:
+:toc-placement!:
+
+toc::[levels=1]
+
 == links ==
 
 * http://www.exherbo.org/docs/exheres-for-smarties.html
