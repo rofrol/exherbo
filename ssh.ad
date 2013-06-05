@@ -1,0 +1,41 @@
+= SSH
+
+== remember passphrase
+
+=== ssh-agent
+
+Disadvantages: need to add key for every session
+----
+echo "eval `ssh-agent`" >> ~/.bash_profile
+. ~/.bash_profile
+----
+
+=== keychain
+
+echo "/usr/bin/keychain ~/.ssh/id_rsa
+source ~/.keychain/<hostname>-sh > /dev/null" >> ~/.bash_profile
+
+
+=== testing
+
+----
+echo "$SSH_AUTH_SOCK"
+#/tmp/ssh-4hNGMk8AZX/agent.79453
+ssh-add ~/.ssh/id_rsa
+ssh-add -L
+ssh -T user@host -p port
+----
+
+http://www.gentoo.org/doc/en/articles/openssh-key-management-p2.xml
+
+https://help.github.com/articles/using-ssh-agent-forwarding
+
+http://www.thegeekstuff.com/2008/11/3-steps-to-perform-ssh-login-without-password-using-ssh-keygen-ssh-copy-id/
+
+== change passphrase
+
+----
+ssh-keygen -p
+----
+
+https://help.github.com/articles/working-with-ssh-key-passphrases
