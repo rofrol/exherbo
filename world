@@ -65,3 +65,7 @@ media-libs/libvorbis
 app-arch/unrar
 dev-util/strace
 virtual/jdk
+app-crypt/gnupg
+app-terminal/tmux
+dev-scm/git
+net-misc/keychain
