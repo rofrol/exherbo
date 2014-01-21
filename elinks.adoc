@@ -1,0 +1,83 @@
+http://www.xteddy.org/elinks/
+http://elinks.or.cz/documentation/manual.html
+man 5 elinks.conf
+
+== navigation
+open menu - F9 or mouse click top row or ESC
+open link - enter 
+history back - left
+history forward - u
+scroll up/down one line - insert/delete or mouse wheel
+scroll left/right one column - [/]
+shift+l to open link context menu
+shift+g to edit current url
+shift+e to eddit current link
+
+== tabs
+e to open tab menu
+t to open new tab
+shift+t or middle click to open url in new tab
+< > to move between tabs or click on tab or mouse wheel on tab bar
+c or middle click to close tab
+there can be confirmation dialog for closing tabs
+there can key binding for close other tabs
+alt+< or alt+> to move tabs
+
+open url from external application in new tab
+elinks -remote $URL
+
+== default site color
+
+o > Document > Default color settings > User document-specified colors > 0
+or toggle with shift+5
+
+== text fields
+
+ctrl+t to edit in $EDITOR
+pasting - shift + middle click
+select text - shift + select left click
+ctr+x to cut text
+ctrl+insert to paste text
+
+=== edit text field
+
+doesn't work
+enter to edit or in .elinks/elinks.conf
+set document.browse.forms.insert_mode = 0
+
+http://comments.gmane.org/gmane.comp.web.elinks.user/1051
+
+=== elinks do you want to post form data
+o > Document > Browsing > Forms > Confirm submission
+
+doesn't work
+in .elinks/elinks.conf
+set document.browse.forms.confirm_submit=0
+
+http://comments.gmane.org/gmane.comp.web.elinks.user/1051
+
+== speed searching google
+
+press g or t
+then
+g Search for sth
+
+== smart prefixing
+set protocol.rewrite.dumb.v = "http://validator.w3.org/check?verbose=1&uri=%c" (validate Page)
+Setup -> Options Manager -> Protocols -> {Dumb,Smart} Prefixes
+
+http://www.calmar.ws/elinks/
+
+== bookmarks
+a to add a new bookmark using current url
+A to add a new bookmark using current link
+s to open bookmarks
+to move bookmarks press insert, move to new position, press move
+it will position after selected position, so if you want to move to top, then you have to move top one
+
+== searching
+/ document search (press ? for backwards)
+# incremental links search
+#/ incremental document search
+n/N next previous match
+up/down to cycle between historical searches, only in search field
