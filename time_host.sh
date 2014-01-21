@@ -19,3 +19,12 @@ date
 #hwclock --systohc
 #hwclock --hctosys --localtime
 
+#== ntp
+#cave resolve ntp
+#systemd start ntpd
+#systemd enable ntpd
+#ntp wasn't syncing time and systemctl status ntpd showed
+# [/usr/lib/systemd/system/ntpd.service:9] Unknown lvalue 'ControlGroup' in section 'Service'
+#deleting line with ControlGroup in file /usr/lib64/systemd/system/ntpd.service helped
+#https://bugs.archlinux.org/task/36339
+#https://bugzilla.redhat.com/show_bug.cgi?id=1011047

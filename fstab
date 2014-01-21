@@ -1,0 +1,48 @@
+# /etc/fstab: static file system information.
+#
+# noatime turns off atimes for increased performance (atimes normally aren't
+# needed; notail increases performance of ReiserFS (at the expense of storage
+# efficiency). It's safe to drop the noatime options if you want and to
+# switch between notail / tail freely.
+#
+# The root filesystem should have a pass number of either 0 or 1.
+# All other filesystems should have a pass number of 0 or greater than 1.
+#
+# Use /dev/<UUID> for device nodes. To find the UUIDs, use e. g.:
+# blkid
+# The above command will give you all information you need. Or you use
+# blkid /dev/<something>
+# to get the UUID for a specific device node.
+#
+# See the manpage fstab(5) for more information.
+#
+
+# <fs>           <mountpoint>    <type>      <opts>           <dump/pass>
+
+# NOTE: If your BOOT partition is ReiserFS, add the notail option to opts.
+#/dev/BOOT        /boot           ext2        noauto,noatime       1 2
+/dev/sda3        /               ext4        noatime              0 1
+
+#https://wiki.archlinux.org/index.php/NTFS-3G
+/dev/sda2  /mnt/windows  ntfs-3g   defaults
+#allow people in the users group to have access		  0       0
+#/dev/NTFS-partition  /mnt/windows  ntfs-3g   gid=users,umask=0022    0       0
+#enable user writing
+#/dev/NTFS-partition  /mnt/windows  ntfs-3g   uid=username,gid=users,umask=0022    0       0
+#own the file system yourself and grant all possible permissions
+#/dev/NTFS-partition  /mnt/windows  ntfs-3g   uid=USERNAME,gid=users    0       0
+#umask: sets file permissions on newly created files,
+# default umask for root and user is 0022.
+#With 0022 new folders have the directory permissions of 755
+#and new files have permissions of 644
+
+
+#/dev/SWAP        none            swap        sw                   0 0
+#/dev/cdrom       /mnt/cdrom      auto        noauto,ro            0 0
+#/dev/fd0        /mnt/floppy     auto        noauto               0 0
+
+# glibc 2.2 and above expects tmpfs to be mounted at /dev/shm for
+# POSIX shared memory (shm_open, shm_unlink).
+# (tmpfs is a dynamically expandable/shrinkable ramdisk, and will
+# use almost no memory if not populated with files)
+shm              /dev/shm     tmpfs       nodev,nosuid,noexec  0 0

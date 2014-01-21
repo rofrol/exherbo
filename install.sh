@@ -46,7 +46,7 @@ mkfs.ext4 -L ${distro} /dev/${part}
 #if dir doesn't exist, create; if dir exists mount;
 [ ! -d /mnt/${distro} ] && mkdir /mnt/${distro}; [ -d /mnt/${distro} ] && mount -L ${distro} /mnt/${distro} && mount | grep ${distro}
 
-elinks http://dev.exherbo.org/stages/
+#http://dev.exherbo.org/stages/
 cd ${proj}/temp && wget http://dev.exherbo.org/stages/exherbo-${arch}-current.tar.xz
 
 #sha1sum is generally outdated
@@ -70,7 +70,7 @@ cp -L ${proj}/Warsaw /mnt/${distro}/etc/localtime
 #rsync -vaHW ${proj}/temp/distfiles/ /mnt/exherbo/var/cache/paludis/distfiles
 
 #set hostname
-##elinks http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=1&chap=8
+#http://www.gentoo.org/doc/en/handbook/handbook-x86.xml?part=1&chap=8
 ##vim /etc/conf.d/hostname
 #set domainname dns_domain_lo="homenetwork"
 ##vim /etc/conf.d/net
@@ -105,20 +105,21 @@ cd /etc/paludis && vim bashrc && vim *conf
 
 passwd
 
+#http://comments.gmane.org/gmane.linux.distributions.exherbo.devel/1225
+#Impossible to install Exherbo amd64 with the latest stage on Virtualbox
+#and
+# === Completed ebuild phase killold
+#execv failed (errno:1 Operation not permitted)
+echo "dev-libs/glib build_options: -recommended_tests" >> /etc/paludis/options.conf
+env PALUDIS_DO_NOTHING_SANDBOXY=1 cave resolve sydbox -x
 #not in install guide
 #eclectic env update
-
-#needed by paludis, pulls dev-lang/tcl -> dev-tcl/expect -> dev-util/dejagnu -> dev-libs/libffi -> dev-lang/python -> app-doc/asciidoc, app-text/docbook-xml-dtd -> app-doc/asciidoc
-cave resolve -x asciidoc
-
-#needed by paludis
-cave resolve -x xmlto
 
 #do not sync before cave resolve -x paludis
 #40 min
 #i got error: x86_64-pc-linux-gnu-g++: Internal error: Killed (program cc1plus)
 #solved by 1GB RAM for VMWare Machine with sysrescuecd running
-cave resolve -x1 paludis
+env PALUDIS_DO_NOTHING_SANDBOXY=1 cave resolve -x1 paludis
 cave sync
 
 eclectic config interactive
@@ -127,16 +128,24 @@ eclectic config interactive
 #cd temp & wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-${KERNEL_VERSION}.tar.bz2
 
 ######################### systemd
+# http://exherbo.org/docs/systemd.html
 
 echo '*/* systemd' >> /etc/paludis/options.conf
 
 #for sys-auth/ConsoleKit -> sys-apps/dbus
-cave resolve repository/desktop -x
 #for x11-libs/libX11 -> sys-auth/ConsoleKit
-cave resolve repository/x11 -x
 cave resolve -x sys-apps/systemd
+#echo "sys-apps/util-linux build_options: -recommended_tests" >> /etc/paludis/options.conf
 cave resolve world -cx
 eclectic init set systemd
+
+eclectic news read 2013-05-31-stages-set
+cave update-world app-arch/libarchive app-editors/vim app-text/wgetpaste net-misc/dhcpcd app-arch/zip sys-boot/grub
+cave purge -x
+
+cave resolve gpm -x
+systemctl enable gpm
+systemctl start gpm
 
 #grub
 #set options for systemd as described here http://www.mailstation.de/wordpress/?p=48
@@ -150,10 +159,19 @@ eclectic init set systemd
 #enable fuse and ext4
 #ext4 options described here http://en.gentoo-wiki.com/wiki/Ext4#Configuring_the_kernel
 
+#use kernel version from http://git.exherbo.org/summer/packages/sys-kernel/linux-headers/index.html
+#and put archive in /var/cache/paludis/distfiles/ so you don't have to download linux source again
+#or add particular exheres to /var/db/paludis/repositories/arbor/packages/sys-kernel/linux-headers
+
+#in order to zgrep sth /proc/config
+#CONFIG_IKCONFIG_PROC=y
+#CONFIG_IKCONFIG_PROC=y
 cd /mnt/${projname}/temp && wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-${KERNEL_VERSION}.tar.bz2
 cd /mnt/${projname}/temp && tar xvjf linux-${KERNEL_VERSION}.tar.bz2 -C /usr/src
 cd /usr/src/linux-${KERNEL_VERSION} && make menuconfig
-cd /usr/src/linux-${KERNEL_VERSION} && time make && make modules_install && cp arch/x86/boot/bzImage /boot/kernel
+cd /usr/src/linux-${KERNEL_VERSION} && time make && make modules_install && cp arch/x86_64/boot/bzImage /boot/kernel
+
+#/boot/grub directory will also be created
 grub-install /dev/sda
 cp /mnt/${projname}/grub.cfg /boot/grub/
 
@@ -161,21 +179,76 @@ ln -sf /proc/self/mounts /etc/mtab
 
 localedef -i pl_PL -f UTF-8 pl_PL.UTF-8
 
-#start network by hand
-ifconfig eth0 up && dhcpcd eth0 && ping -c 3 wp.pl
+##### Network
+#TODO: ifplugd for eth?
+#https://wiki.archlinux.org/index.php/Wireless_Setup
+#wicd vs netoworkmanager http://www.linuxquestions.org/questions/slackware-14/wicd-vs-networkmanager-4175458775/
+#wicd howto http://forum.manjaro.org/index.php?topic=3534.0
 
-#eth0 isn't upped
-#systemctl enable dhcpcd.service
+#for ip command, newer than iwconfig from wireless_tools
+cave resolve iproute2 -x
+#openssl or gnutls use flag to have encryption
+echo "net-wireless/wpa_supplicant dbus nl80211" >> /etc/paludis/options.conf
+cave resolve NetworkManager -x
+#cave resolve gnome-desktop/network-manager-applet -x
+#net-wireless/ModemManager "Provides mobile 3G support for NetworkManager
 
-#dhcpcd already installed
-#cave resolve wpa_supplicant -x
-#after reboot?
-#systemctl start NetworkManager.service
+#dhcpcd will autorun wpa_supplicant, if there is /etc/wpa_supplicant.conf, this path hardcoded in hook
+systectl enable dhcpcd
+systectl start dhcpcd
 
-#for fuse-sshfs
-cave resolve repository/maww -x
-#for fuse
-cave resolve repository/pioto -x
+#start ethernet network by hand
+#ifconfig eth0 up && dhcpcd eth0 && ping -c 3 wp.pl
+
+#to disable/enable switch on device
+cave resolve rfkill
+
+
+#== ntfs
+cave resolve ntfs-3g_ntfsprogs -x
+
+#== wayland
+# http://www.chaosreigns.com/wayland/state/
+# http://www.chaosreigns.com/wiki/Exherbo
+echo '*/* wayland -X' >> /etc/paludis/options.conf
+echo 'CPPFLAGS="${CPPFLAGS} -DMESA_EGL_NO_X11_HEADERS"' >> /etc/paludis/bashrc
+echo "dev-libs/libxml2 python" >> /etc/paludis/options.conf
+echo "app-text/poppler glib cairo" >> /etc/paludis/options.conf
+cave resolve wayland weston -x
+# when running weston:
+# Error:    failed to add default include path /usr/share/X11/xkb
+# http://www.mail-archive.com/wayland-bugs@lists.freedesktop.org/msg01350.html
+cave resolve xkeyboard-config -x
+
+#noveau?
+#lspci
+#grep -i drm /usr/src/linux/.config
+
+#remove
+cave uninstall mesa -r '*/*' -x
+
+#== REISUB Reboot Even If System Utterly Broken
+
+in linux config
+CONFIG_MAGIC_SYSRQ=y
+
+help (fn+alt+prtsc, release prtsc)
+alt+sysrq+h
+restart
+alt+sysrq+REISUB
+
+echo "1" > /proc/sys/kernel/sysrq
+#or if you wish to have it enabled during boot (or in /etc/sysctl.conf)
+echo "kernel.sysrq = 1" >> /etc/sysctl.d/99-sysctl.conf
+
+default is 16, only sync
+https://fedoraproject.org/wiki/QA/Sysrq
+
+https://wiki.archlinux.org/index.php/Keyboard_Shortcuts
+http://royal.pingdom.com/2012/08/13/troubleshooting-sysrq/ 
+
+#== other
+
 cave resolve sshfs -x
 
 cave resolve tree -x
@@ -200,43 +273,26 @@ cave resolve tree -x
 #config_template '/etc/paludis/repository.template' is not a regular file (paludis::ConfigurationError)
 ##mv /etc/paludis/repository.template\: /etc/paludis/repository.template
 
-#add ssl or gnutls option to have encryption, it seems that ssl was enabled already
-#echo "net-wireless/wpa_supplicant ssl" >> /etc/paludis/options.conf
-cave resolve repository/hardware -x
-cave resolve -x iwlwifi-3945-ucode wpa_supplicant wireless_tools
-
 #grub-static is installed? and it won't upgrade on x86 beaces is keyworded ~amd64; at this moment grub can't be compiled on amd64
 mv /etc/init.d/net.eth0 /etc/init.d/net.wlan0; cp ${proj}/conf/etc/conf.d/net.wlan0 /etc/conf.d/net; cp ${proj}/conf/etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/;
 
-elinks http://rofrol.wordpress.com/2009/10/12/iwl3945-linux-2-6-31/
-#cave resolve -x vanilla-sources no longer works since all sources has been removed
-elinks kernel.org and download kernel and unpack it; enable kconfig
-tar -vpxjf ${proj}/temp/linux*.tar.bz2 -C /usr/src
-#ln -s /usr/src/linux... /usr/src/linux or use eclectic
-
-#seems like kernel module was removed from eclectic
-#eclectic kernel set 1
 
 #it should work in busybox, but in bash? http://www.openchill.org/?cat=9
 
 #extract config from kernel image /usr/src/linux/scripts/extract-ikconfig /boot/image > .config
 yes ? | make --quiet oldconfig
-cd /usr/src/linux && make menuconfig && make && make modules_install && make install
 
 enable ctrl+alt+del in /etc/inittab
 
 #early install of kvm, to check if i can already install it
 #should I install qemu-kvm or qemu?
-elinks http://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine
-elinks http://www.techtopia.com/index.php/Installing_and_confguring_Fedora_KVM_Virtualization
+#http://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine
+#http://www.techtopia.com/index.php/Installing_and_confguring_Fedora_KVM_Virtualization
 #qemu for full hardware virtualization: guest different arch then host
 #qemu-kvm: kvm uses qemu for device emulation like vga, disk controllers etc. kvm is hypervisor as linux module
 #VirtIO framework (libvirt, virt-manger, virt-viewer, virtinst): allows paravirtualization, faster, installing paravirtual devices in guest like Ethernet card, disk I/O controller etc.
-elinks http://virt-manager.org
+#http://virt-manager.org
 
-#respository/perl for dev-perl/Text-Unidecode for qemu-kvm
-cave resolve repository/perl -x
-cave resolve repository/virtualization -x
 cave search --name qemu
 cave resolve qemu-kvm -x
 
@@ -244,13 +300,15 @@ cave resolve qemu-kvm -x
 #wget http://altruistic.lbl.gov/mirrors/ubuntu/pool/universe/m/mc/mc_4.6.2-2.diff.gz
 #wget http://ftp.debian.org/debian/pool/main/m/mc/mc_4.7.0-pre1-3.diff.gz
 
-#irssi config generator: make-irssi-config.sh < http://www.matthew.ath.cx/programs/irssiconfig < http://pl.wikibooks.org/wiki/Irssi
+#== elinks
+echo "net-www/elinks" >> /etc/paludis/package_unmask.conf
 echo "net-www/elinks gpm" >> /etc/paludis/options.conf
-#repository/alip for elinks
-cave resolve repository/alip -x
-cave resolve -x elinks gpm htop mc irssi terminus-font
-/etc/init.d/gpm start
-eclectic rc add gpm default
+#dev-libs/tre need this for tests
+localedef -i en_US -f ISO-8859-1 en_US.ISO-8859-1
+cave resolve elinks -x
+
+#irssi config generator: make-irssi-config.sh < http://www.matthew.ath.cx/programs/irssiconfig < http://pl.wikibooks.org/wiki/Irssi
+cave resolve -x htop mc irssi terminus-font
 
 echo "fonts/terminus-font X" >> /etc/paludis/options.conf
 #many things get installed, not only terminus
@@ -261,27 +319,27 @@ cave resolve -x terminus-font --suggestions take
 
 sh ${proj}/grub.sh
 
-elinks http://nouveau.freedesktop.org/wiki/ExherboInstall
-elinks http://intellinuxgraphics.org/user.html
-elinks http://intellinuxgraphics.org/install.html
-elinks http://en.gentoo-wiki.com/wiki/Intel_GMA
+#http://nouveau.freedesktop.org/wiki/ExherboInstall
+#http://intellinuxgraphics.org/user.html
+#http://intellinuxgraphics.org/install.html
+#http://en.gentoo-wiki.com/wiki/Intel_GMA
 #matrix with suported features
-elinks http://www.x.org/wiki/IntelGraphicsDriver
-elinks http://www.x.org/wiki/ModularDevelopersGuide
+#http://www.x.org/wiki/IntelGraphicsDriver
+#http://www.x.org/wiki/ModularDevelopersGuide
 #how to enable ctrl+alt+backspace
-elinks http://www.gentoo.org/proj/en/desktop/x/x11/xorg-server-1.6-upgrade-guide.xml
+#http://www.gentoo.org/proj/en/desktop/x/x11/xorg-server-1.6-upgrade-guide.xml
 
-elinks http://exherbo.org/docs/exheres-for-smarties.html
+#http://exherbo.org/docs/exheres-for-smarties.html
 #In any of the variants, opt may optionally end in a (+) or a (-) to indicate that, when matching the spec against a package that does not have the flag, that it should be assumed to be enabled or disabled respectively. If neither is specified, it is illegal for the remainder of the spec to match any such package. The (+) or (-) goes before the =, !=, ? or !?, if both are present.
 #W jakimkolwiek wariancie, opt może opcjonalnie konczyć się na (+) lub (-) aby wskazać, że kiedy zachodzi dopasowywanie spec do pakietu, który nie ma tej flagi, że to powinno być zakładane, że jest włączone lub wyłączone odpowiednio. Jeśli żedne nie jest określone, to jest nielegalne dla przypominacza speca, aby dopasować jakikolwiek taki pakiet. (+) lub (-) idzie przed =, !=, ? lub !?, jeśli obydwa są dostępne.
 
 #what about VIDEO_DRIVERS: gallium-intel intel for x11-dri/mesa
 #echo "*/* INPUT_DRIVERS: evdev -keyboard -mouse VIDEO_DRIVERS: intel" >> /etc/paludis/options.conf
-echo "*/* VIDEO_DRIVERS: intel" >> /etc/paludis/options.conf
+echo "*/* VIDEO_DRIVERS: intel nouveau" >> /etc/paludis/options.conf
 #looks like INPUT_DRIVERS doesn't work anymore
-echo "*/* INPUT_DRIVERS: evdev" >> /etc/paludis/options.conf
-#for x11-libs/libX11
-echo "x11-libs/libX11 xcb" >> /etc/paludis/options.conf
+#echo "*/* INPUT_DRIVERS: evdev" >> /etc/paludis/options.conf
+#no package libx11 when running cave resolve xorg-server?
+#echo "x11-libs/libX11 xcb" >> /etc/paludis/options.conf
 #encodings and fonts
 #KSC5601.1987-0 font-daewoo-misc, JISX0208.1983-0 font-jis-misc, GB2312.1980-0 font-isas-misc, font-misc-misc for iso and jisx0201 and koi08-r
 #problem: startx very slow, LC_ALL=C startx or install proper fonts?
@@ -293,17 +351,21 @@ echo "x11-libs/libX11 xcb" >> /etc/paludis/options.conf
 # cat font_list | grep -E "^\*[^:]+/"
 #python tests took too long, more than hour and it stil was testing
 echo "dev-lang/python build_options: -recommended_tests" >> /etc/paludis/options.conf
-cave resolve repository/x11 -x
 #strange:
 #install.sh: line 17:  9359 Naruszenie ochrony pamięci   cave resolve xorg-server -x
 #and line 17: eval "time (${p})";
 #i can't even run it by hand with time: time cave resolve xorg-server -x
 #udev or hal, without it Alt+SysRq+RESUIB
-echo "x11-server/xorg-server udev" >> /etc/paludis/options.conf
+#no udev flag
+#echo "x11-server/xorg-server udev" >> /etc/paludis/options.conf
+
 #you would need evdev if xorg-server uses udev for input devices
-cave resolve xf86-input-evdev -x
+#evdev default?
+#cave resolve xf86-input-evdev -x
+
 #udev just needs glib
-echo "sys-fs/udev glib" >> /etc/paludis/options.conf
+#no package udev?
+#echo "sys-fs/udev glib" >> /etc/paludis/options.conf
 #I encountered the following errors for untaken packages:
 #(!) sys-auth/ConsoleKit:(unknown)::(install_to_slash)
 #but i couldn't find wich untaken package caused it, strange.
@@ -311,28 +373,61 @@ echo "sys-fs/udev glib" >> /etc/paludis/options.conf
 #What is even more strange, that it doesn't install ConsoleKit
 #but adding repo solved the problem
 #or --suggestions ignore ?
-cave resolve repository/desktop -x
 cave resolve xorg-server -x
 #do not run with take, or you will have to enable radeon or sth?
 # --suggestions take
 
 #take suggestions for xterm, twm etc.
+#no suggestions now
 cave resolve xinit --suggestions take -x
 
-#why do I have to install intel manually, why there are VIDEO_DRIVERS
-cave resolve xf86-video-intel -x
+#why do I have to install intel manually, why there are VIDEO_DRIVERS?
+cave resolve xf86-video-intel xf86-video-nouveau -x
 
 #you will need these fonts or startx+twm will start slowly
 #switch to console where you run startx to see for yourself
 #twm: warning: font for charset JISX0208.1983-0 is lacking.
 #twm: warning: font for charset KSC5601.1987-0 is lacking.
 #twm: warning: font for charset GB2312.1980-0 is lacking.
-cave resolve font-daewoo-misc font-jis-misc font-isas-misc -x
+#not anymore
+#cave resolve font-daewoo-misc font-jis-misc font-isas-misc -x
+
+X -retro
+
+cave resolve xterm -x
+#is it needed?
+cave resolve xf86-video-modesetting -x
+echo "exec twm" > ~/.xinitrc
+#run as normal user
+startx
+
+#== GNOME
+#error: gnome-doc-utils missing
+#gnome-doc-utils >= 0.3.2 not found
+#Install failed for 'gnome-desktop/gconf-editor-3.0.1:0
+cave resolve gconf-editor
+
+#== Icons and Cursors
+cave resolve dmz-cursor-theme -x
+cave resolve tango-icon-theme -x
+gsettings set org.gnome.desktop.interface cursor-theme 'DMZ-White'
+
+#== groups
+#list
+cut -d: -f1 /etc/group | sort
+#add to existing user
+usermod -aG group1 group2 user1
+#== Sound
+usermod -aG audio <user> && shutdown -r now
+
+#== Flash for Firefox
+cave resolve adobe-flash -x && shutdown -r now
+
 
 #http://en.wikipedia.org/wiki/Unicode_typefaces
 #http://wiki.archlinux.org/index.php/Fonts
 #http://wiki.archlinux.org/index.php/Xorg_Font_Configuration
-elinks http://en.gentoo-wiki.com/wiki/X.Org/Fonts
+#http://en.gentoo-wiki.com/wiki/X.Org/Fonts
 #if you get warning: font for charset ISO8859-2 is lacking. (and others codings)
 #and for TTF font warning
 #you have to download liberation manually with

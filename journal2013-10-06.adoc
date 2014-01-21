@@ -1,0 +1,173 @@
+http://superuser.com/questions/379657/create-a-multiboot-usb-drive-with-ntfs-or-ext2
+Try this if you are running windows http://www.pendrivelinux.com/yumi-multiboot-usb-creator/
+or this if you are running linux http://www.pendrivelinux.com/multiboot-create-a-multiboot-usb-from-linux/
+
+
+systemrescuecd on ntfs usb use ...
+elinks Installing\ Exherbo.htm
+Insert/Delete to scroll
+/etc/init.d/gpm start
+to change shell to bash run: bash
+
+http://wiki.gentoo.org/wiki/Safe_CFLAGS
+
+AR9285
+http://unix.stackexchange.com/questions/4031/configure-atheros-ar9285-wireless-in-gentoo
+[*] Networking support  --->
+    -*-   Wireless  --->
+        <*>   cfg80211 - wireless configuration API                                                                                                                  
+        [*]     enable powersave by default
+        [*]     cfg80211 wireless extensions compatibility
+        [*]   Wireless extensions sysfs files
+        <*>   Common routines for IEEE802.11 drivers
+        <*>   Generic IEEE 802.11 Networking Stack (mac80211)
+              Default rate control algorithm (Minstrel)  --->
+        -*-   Enable LED triggers
+
+Device Drivers  --->
+    [*] Network device support  --->
+        [*]   Wireless LAN  --->
+            <*>   Atheros Wireless Cards  --->
+                <*>   Atheros 802.11n wireless cards support
+
+
+http://wireless.kernel.org/en/users/Drivers/Atheros
+> http://wireless.kernel.org/en/users/Drivers/ath9k
+
+Networking  --->
+  Wireless  --->
+    <M> Improved wireless configuration API
+    <M> Generic IEEE 802.11 Networking Stack (mac80211)
+
+You can then enable ath9k in the kernel configuration under
+
+Device Drivers  --->
+  [*] Network device support  --->
+        Wireless LAN  --->
+          Atheros Wireless Cards ---->
+            <M>   Atheros 802.11n wireless cards support
+		
+http://wireless.kernel.org/en/users/Documentation/iw		
+iw is a new nl80211 based CLI configuration utility for wireless devices. It supports all new drivers that have been added to the kernel recently. The old tool iwconfing, which uses Wireless Extensions interface, is deprecated and it's strongly recommended to switch to iw and nl80211.
+iw help
+iw list
+iw dev wlan0 scan
+Listening to events
+
+Just use
+
+iw event
+
+When debugging, it can be useful to see the auth/assoc/deauth/disassoc frames, use
+
+iw event -f
+
+and sometimes timing information is also useful:
+
+iw event -t
+
+iw dev wlan0 link
+
+If you need to connect to an AP with WPA or WPA2 encryption requirements then you must use wpa_supplicant. 
+
+
+http://forums.linuxmint.com/viewtopic.php?f=53&t=138670
+inxi -Fx
+sudo lshw -C network
+iwconfig
+rfkill list
+
+If you still have problems with the AR9285 such as bad signal, slow transfer speed or a dropping connection, you can try this:
+
+Code: Select all
+    gksudo gedit /etc/modprobe.d/ath9k.conf
+
+(replace gedit by pluma on MATE)
+
+In that text file please put:
+
+Code: Select all
+    options ath9k nohwcrypt
+
+
+Then save, exit and reboot; and after that you should not have problems related to bad signal anymore.
+
+
+rfkill list all
+
+
+
+http://forums.gentoo.org/viewtopic-p-6794480.html
+> http://forums.gentoo.org/viewtopic-t-890202.html
+
+tak dlugo jak sie w `ifconfig -a` nie pojawi karta wifi nie masz co sie bawic nawet z init scriptami.
+Dodatkowo, wszystkim polecam wicd do wifi zamiast init skryptow, duzo bardziej wygodne.
+ifconfig -a
+dmesg | grep ath9
+
+Poza tym, w opcjach ładowania modułów można ustawić opcję debug, coś w stylu, np:
+Kod:	
+modprobe <moduł> debug=9	
+- wtedy moduł dokładniej pokaże w logach, co jest grane.
+Wszystkie parametry ath9k zobaczysz w wyniku:
+Kod:	
+modinfo ath9k	
+
+
+Poza tym zobacz, czy widzi kartę:
+Kod:	
+lspci -k | egrep -iA3  'ether|net|wireless'	
+
+I zobacz ewentualnie na jakimś systemie LiveCD, czy widzi tą kartę.
+
+Zobacz też, czy nie masz tego steru w tej chwili wbudowanego na stałe:
+Kod:	
+grep -i ath /boot/config-$(uname -r)	
+
+oraz
+Kod:	
+modprobe -r  ath9k	
+
+
+Przy próbie wyładowania modułu wbudowanego w jajo zobaczysz podobny komunikat:
+Cytat:	
+modprobe -r snd-hda-intel
+FATAL: Module snd_hda_intel is builtin
+
+
+
+
+http://wireless.kernel.org/en/users/Documentation/iw
+
+
+== cpu
+
+processor type for i7: core2 or xeon, because cpufamily 6 from /proc/cpuinfo
+MCORE2=y
+
+KCONFIG=y
+
+chroot before make, or you will get error: initramfs_data.o cpu you selected does not support x86-64
+
+make 16m
+Warning: modpost: Found 1 section mismatch(es).
+http://stackoverflow.com/questions/6807766
+
+== grub
+
+grub-install /dev/sda
+
+
+== config
+
+Assuming your kernel was built with the IKCONFIG option, you can use the scripts/extract-ikconfig tool to extract the original .config file.
+
+Alternately, you can boot that kernel and find the embedded configuration in /proc/config.gz.
+
+http://stackoverflow.com/questions/14958192/getting-config-from-linux-kernel-image
+
+== boot windows in grub
+press c to enter command line
+set root=(hd0,1)
+chainloader +1
+boot

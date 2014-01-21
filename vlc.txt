@@ -1,0 +1,17 @@
+== vlc can't play files
+
+$ vlc -vvv
+...
+[0x2029048] main libvlc warning: cannot load module `/usr/lib64/vlc/plugins/codec/libavcodec_plugin.so' (libavcodec.so.54: cannot open shared object file: No such file or directory)
+[0x2029048] main libvlc warning: cannot load module `/usr/lib64/vlc/plugins/access/libaccess_avio_plugin.so' (libavformat.so.54: cannot open shared object file: No such file or directory)
+[0x2029048] main libvlc warning: cannot load module `/usr/lib64/vlc/plugins/demux/libavformat_plugin.so' (libavformat.so.54: cannot open shared object file: No such file or directory)
+
+$ ldd `which ffmpeg` |grep libav
+	libavdevice.so.55 => /usr/lib64/libavdevice.so.55 (0x00007fb84abbb000)
+		libavfilter.so.3 => /usr/lib64/libavfilter.so.3 (0x00007fb84a8c0000)
+		libavformat.so.55 => /usr/lib64/libavformat.so.55 (0x00007fb84a55d000)
+		libavresample.so.1 => /usr/lib64/libavresample.so.1 (0x00007fb84a342000)
+		libavcodec.so.55 => /usr/lib64/libavcodec.so.55 (0x00007fb8494b4000)
+		libavutil.so.52 => /usr/lib64/libavutil.so.52 (0x00007fb848bdb000)
+
+cave fix-linkage -x

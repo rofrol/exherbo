@@ -1,0 +1,1 @@
+xgamma -gamma $1

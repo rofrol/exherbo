@@ -1,0 +1,51 @@
+00:00.0 Host bridge: Intel Corporation 2nd Generation Core Processor Family DRAM Controller (rev 09)
+	Subsystem: Lenovo Device 3977
+	Kernel driver in use: agpgart-intel
+00:01.0 PCI bridge: Intel Corporation Xeon E3-1200/2nd Generation Core Processor Family PCI Express Root Port (rev 09)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:01.1 PCI bridge: Intel Corporation Xeon E3-1200/2nd Generation Core Processor Family PCI Express Root Port (rev 09)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:02.0 VGA compatible controller: Intel Corporation 2nd Generation Core Processor Family Integrated Graphics Controller (rev 09)
+	Subsystem: Lenovo Device 3976
+	Kernel driver in use: i915
+	Kernel modules: i915
+00:14.0 USB controller: Intel Corporation 7 Series/C210 Series Chipset Family USB xHCI Host Controller (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel driver in use: xhci_hcd
+00:16.0 Communication controller: Intel Corporation 7 Series/C210 Series Chipset Family MEI Controller #1 (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel driver in use: ndiswrapper
+00:1a.0 USB controller: Intel Corporation 7 Series/C210 Series Chipset Family USB Enhanced Host Controller #2 (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel driver in use: ehci_hcd
+00:1b.0 Audio device: Intel Corporation 7 Series/C210 Series Chipset Family High Definition Audio Controller (rev 04)
+	Subsystem: Lenovo Device 3977
+00:1c.0 PCI bridge: Intel Corporation 7 Series/C210 Series Chipset Family PCI Express Root Port 1 (rev c4)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1c.1 PCI bridge: Intel Corporation 7 Series/C210 Series Chipset Family PCI Express Root Port 2 (rev c4)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1d.0 USB controller: Intel Corporation 7 Series/C210 Series Chipset Family USB Enhanced Host Controller #1 (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel driver in use: ehci_hcd
+00:1f.0 ISA bridge: Intel Corporation HM76 Express Chipset LPC Controller (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel modules: iTCO_wdt
+00:1f.2 SATA controller: Intel Corporation 7 Series Chipset Family 6-port SATA Controller [AHCI mode] (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel driver in use: ahci
+00:1f.3 SMBus: Intel Corporation 7 Series/C210 Series Chipset Family SMBus Controller (rev 04)
+	Subsystem: Lenovo Device 3977
+	Kernel modules: i2c_i801
+01:00.0 3D controller: NVIDIA Corporation GF117M [GeForce 610M/710M / GT 620M/625M/630M/720M] (rev a1)
+	Subsystem: Lenovo GeForce 610M / GT 620M
+	Kernel modules: nouveau
+03:00.0 Ethernet controller: Qualcomm Atheros AR8162 Fast Ethernet (rev 08)
+	Subsystem: Lenovo Device 3979
+04:00.0 Network controller: Qualcomm Atheros AR9285 Wireless Network Adapter (PCI-Express) (rev 01)
+	Subsystem: Lenovo Device 31a1
+	Kernel driver in use: ath9k
+	Kernel modules: ath9k
