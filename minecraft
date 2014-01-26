@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# http://www.ailis.de/~k/archives/73-Minecraft-and-Gnome-Shell.html
+
+if [ ! -f ~/.minecraft/minecraft.jar ]; then
+	#jar
+	wget https://s3.amazonaws.com/Minecraft.Download/launcher/Minecraft.jar
+	mkdir -p ~/.minecraft
+	mv Minecraft.jar ~/.minecraft
+
+	#Icon
+	mkdir -p ~/.local/share/icons
+	unzip -o -j ~/.minecraft/minecraft.jar favicon.png
+	mv favicon.png ~/.local/share/icons/minecraft.png
+
+	#Launcher
+	mkdir -p ~/.local/share/applications
+
+cat > ~/.local/share/applications/minecraft.desktop <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Minecraft
+Icon=minecraft
+Exec=minecraft
+Categories=Game;
+EOF
+
+fi
+
+exec java -Xmx1024M -Xms512M -jar ~/.minecraft/minecraft.jar "$@"
