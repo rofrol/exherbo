@@ -425,3 +425,15 @@ http://melp.nl/2011/01/10-must-have-key-and-mouse-binding-configs-in-openbox/
 
 thanks to McGuyver
 http://paste.pound-python.org/raw/33375/
+
+== take using --purge
+
+below example will uninstall packages not used by firefox anymore and down dependency tree
+
+----
+cave resolve firefox --purge '*/*'
+----
+
+http://paludis.exherbo.org/clients/cave-resolve.html
+
+http://paludis.exherbo.org/clients/cave-purge.html
