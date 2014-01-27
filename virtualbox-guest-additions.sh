@@ -1,6 +1,9 @@
+# http://unix.stackexchange.com/questions/38204/how-to-setup-virtual-box-guest-additions-drivers-on-systemd-system-exherbo
+# http://wiki.gentoo.org/wiki/VirtualBox
 # http://packages.gentoo.org/package/app-emulation/virtualbox-guest-additions
 # http://packages.gentoo.org/package/x11-drivers/xf86-video-virtualbox
 # http://packages.gentoo.org/package/dev-util/kbuild
+# http://packages.gentoo.org/package/sys-devel/bin86
 
 # VirtualBox
 wget http://download.virtualbox.org/virtualbox/4.3.4/VirtualBox-4.3.4.tar.bz2
@@ -23,6 +26,7 @@ wget http://dev.gentoo.org/~polynomial-c/kBuild-0.1.9998-pre20131130-src.tar.xz
 tar xz kBuild-0.1.9998-pre20131130-src.tar.xz
 cd kBuild-0.1.9998-pre20131130/
 cd src/kmk/
+# http://stackoverflow.com/questions/10999549/how-do-i-create-a-configure-script
 autoreconf -i
 cd ../sed/
 sed 's@AM_CONFIG_HEADER@AC_CONFIG_HEADERS@' -i configure.ac
