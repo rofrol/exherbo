@@ -15,3 +15,17 @@ $ ldd `which ffmpeg` |grep libav
 		libavutil.so.52 => /usr/lib64/libavutil.so.52 (0x00007fb848bdb000)
 
 cave fix-linkage -x
+
+== vlc can't open files from nautilus, etc.
+
+in vlc.desktop change this
+
+----
+Exec=/usr/bin/vlc --started-from-file %U
+----
+
+to this
+
+----
+Exec=/usr/bin/vlc %U
+----
