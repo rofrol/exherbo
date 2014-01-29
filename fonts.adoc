@@ -1,0 +1,68 @@
+== Install fonts
+
+cave show fonts/*::installed
+* fonts/*::installed
+    fonts/cantarell-fonts
+    fonts/corefonts
+    fonts/dejavu
+    fonts/encodings
+    fonts/font-adobe-100dpi
+    fonts/font-adobe-75dpi
+    fonts/font-alias
+    fonts/font-bitstream-75dpi
+    fonts/font-cursor-misc
+    fonts/font-misc-misc
+    fonts/font-util
+    fonts/liberation-fonts
+    fonts/ubuntu-font-family
+    fonts/urw-fonts
+
+== Infinality
+
+Those changes were merged to freetype-2.4. http://www.infinality.net/forum/viewtopic.php?f=2&t=235
+
+== Autohinter
+
+there's very little reason to use it. It does work better with fonts that have broken or no hinting information but it will be strongly sub-optimal for fonts with good hinting information. Generally common fonts are of the later kind so autohinter will not be useful.
+
+https://wiki.archlinux.org/index.php/Font_Configuration#Autohinter
+
+So disable if you have enabled it
+
+----
+eclectic fontconfig disable 10-autohint.conf
+----
+
+But it helped with the test 'Check your LCD monitor at Lagom.nl!' from http://www.lagom.nl/lcd-test/subpixel.php. Maybe because I don't have 'Bitstream Vera Sans' installed/enabled?
+
+== Enable sub-pixel rendering
+
+eclectic fontconfig enable 10-sub-pixel-rgb.conf
+eclectic fontconfig enable 11-lcdfilter-default.conf
+
+http://wiki.gentoo.org/wiki/Fontconfig
+
+== Gnome
+
+Tweak Tool > Fonts
+> Antialiasing > Rgba
+> Hinting > Full
+
+== Firefox
+
+Firefox doesn't use the gnome settings. Basically, the config for freetype is in /etc/fonts/conf.d, but gnome overrides those settings in gtk apps. Firefox use it's own rendering for pages and so use the native freetype configs.
+
+http://www.infinality.net/forum/viewtopic.php?f=2&t=195#p1297
+http://askubuntu.com/questions/360622/how-to-activate-subpixel-font-hinting-for-the-text-inside-firefox-chrome-and-ev
+
+After changing something with eclectic fontconfig, you just need to refresh page to see changes. Right click on text, Inspect element. Then look at tabs Computed > font-family and Fonts, to see what has been choosen.
+
+== Dejavu
+
+You can overwrite font choosing to always choose dejavu fonts with
+
+----
+eclectic fontconfig enable 57-dejavu-sans.conf
+eclectic fontconfig enable 57-dejavu-serif.conf
+eclectic fontconfig enable 57-dejavu-sans-mono.conf
+----
