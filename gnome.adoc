@@ -1,0 +1,3 @@
+== Nautilus
+
+Prefernces > Views > Sort folders before files
