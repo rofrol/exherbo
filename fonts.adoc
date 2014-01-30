@@ -57,7 +57,11 @@ http://askubuntu.com/questions/360622/how-to-activate-subpixel-font-hinting-for-
 
 After changing something with eclectic fontconfig, you just need to refresh page to see changes. Right click on text, Inspect element. Then look at tabs Computed > font-family and Fonts, to see what has been choosen.
 
-== Dejavu
+== Font familys
+
+About licences http://lwn.net/Articles/502371/
+
+=== Dejavu
 
 You can overwrite font choosing to always choose dejavu fonts with
 
@@ -66,3 +70,133 @@ eclectic fontconfig enable 57-dejavu-sans.conf
 eclectic fontconfig enable 57-dejavu-serif.conf
 eclectic fontconfig enable 57-dejavu-sans-mono.conf
 ----
+
+=== Helvetica
+
+Helvetica looks horible. When I look at it with Gnome Font Viewer, it seems to be bitmap font.
+
+This may help https://wiki.archlinux.org/index.php/MS_Fonts
+
+There is configuration avaialable 30-metric-aliases.conf installed by fontconfig, but it maps helvetica to non-ms fonts:
+
+----
+<alias binding="same">
+  <family>Nimbus Sans L</family>
+  <default>
+  <family>Helvetica</family>
+  </default>
+</alias>
+----
+
+It looks like helvetica fonts are from fonts/font-adobe-100dpi:
+
+----
+$ grep -i fonts /var/log/Xorg.0.log
+...
+  /usr/share/fonts/X11/misc/,
+  /usr/share/fonts/X11/100dpi/,
+  /usr/share/fonts/X11/75dpi/
+$ cave owner /usr/share/fonts/X11/100dpi/helvO08.pcf.gz
+fonts/font-adobe-100dpi-1.0.3::installed
+----
+
+I can disable bitmap fonts with
+
+----
+eclectic enable 70-no-bitmaps.conf
+----
+
+but I think it's better to install Tex Gyre Heros.
+
+
+To get a nicer display, either:
+
+- Install MS Fonts and enable config like in https://wiki.archlinux.org/index.php/MS_Fonts
+- Install tex-gyre-fonts and enable 70-no-bitmaps.conf; This uses TeX Gyre Heros, a metric-compatible Helvetica replacement
+- Install tex-gyre-fonts and uninstall xorg-fonts-{75,100}dpi; This uses TeX Gyre Heros, a metric-compatible Helvetica replacement
+- Install ttf-liberation and grab 29-replace-bitmap-fonts.conf from the older fontconfig package; This uses Liberation Sans, an Arial replacement, but not metric-compatible with Helvetica
+
+https://bbs.archlinux.org/viewtopic.php?pid=1337776#p1337776
+
+=== TeX Gyre Heros
+
+TeX Gyre Adventor is based on the URW Nimbus Sans L kindly released by
+URW++ Design and Development Inc. under GFL (independently of the GPL
+release accompanying Ghostscript). The Vietnamese glyphs were added by
+Han The Thanh.
+
+TeX Gyre Heros can be used as a replacement for a popular font Helvetica,
+also known as Swiss (prepared by Max Miedinger with Eduard Hoffmann, 1957,
+at the Haas Type Foundry).
+
+The TeX Gyre project, following the Latin Modern project, aims at providing
+a rich collection of diacritical characters in the attempt to cover as many
+Latin-based scripts as possible. To our knowledge, the repertoire of
+characters covers all European languages as well as some other Latin-based
+alphabets such as Vietnamese and Navajo; at the request of users, recent
+extensions (following the enhancement of the Latin Modern collection)
+provide glyphs sufficient for typesetting of romanized transliterations
+of Arabic and Sanskrit scripts.
+
+http://www.gust.org.pl/projects/e-foundry/tex-gyre/heros/readme-tex-gyre-heros.txt/view
+
+----
+wget http://www.gust.org.pl/projects/e-foundry/tex-gyre/heros/qhv2004otf
+unzip qhv2.004otf.zip -d src/usr/share/fonts/X11/tex-gyre-2.004
+cave import --location `pwd`/src/ fonts/tex-gyre 2.004 0 --execute
+eclectic fontconfig enable 70-no-bitmaps.conf
+----
+
+=== Bitstream Vera and DejaVu
+
+The DejaVu fonts are modifications of the Bitstream Vera fonts designed for greater coverage of Unicode, as well as providing more styles.
+
+http://en.wikipedia.org/wiki/DejaVu_fonts
+
+=== Liberation Fonts
+
+All three fonts support IBM / Microsoft code pages 437, 737, 775, 850, 852, 855, 857, 860, 861, 863, 865, 866, 869, 1250, 1251, 1252, 1253, 1254, 1257, the Macintosh Character Set (US Roman), and the Windows OEM character set.[citation needed]
+
+The Liberation family supports only the Latin, Greek, and Cyrillic alphabets, leaving out many writing systems. Extension to other writing systems is prevented by its unique licensing terms.
+
+http://en.wikipedia.org/wiki/Liberation_fonts
+
+The license was GPLv2 with the font-embedding exception and the additional clauses from the beginning. This was a result of Red Hat's agreement with Ascender. http://lwn.net/Articles/502371/
+
+
+But they are the best I think so:
+
+----
+cave resolve fonts/liberation-fonts -x
+----
+
+This is not needed, as Liberation Fonts are aliased by 30-metric-aliases.conf
+
+----
+eclectic fontconfig enable 30-liberation-aliases.conf
+----
+
+== How to get location of font by name
+
+Get location of fonts
+
+----
+$ xmllint --xpath 'fontconfig/dir[1]/text()[1]' /etc/fonts/fonts.conf
+/usr/share/fonts
+$ grep -r Nimbus /usr/share/fonts/
+----
+
+xmllint comes with libxml2-utils http://stackoverflow.com/questions/15461737/how-to-execute-xpath-one-liners-from-shell
+
+To see a list of known Xorg fonts use xlsfonts.
+
+== Prefered fonts
+
+---
+$ fc-match sans-serif
+DejaVuSans.ttf: "DejaVu Sans" "Book"
+fc-match Arial
+arial.ttf: "Arial" "Normal"
+$ fc-match "Bitstream Vera Sans"
+DejaVuSans.ttf: "DejaVu Sans" "Book"
+
