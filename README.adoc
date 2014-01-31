@@ -353,7 +353,7 @@ chown -R :users /var/lib
 
 visudo
 ## Uncomment to allow members of group wheel to execute any command
-# %wheel ALL=(ALL) ALL 
+# %wheel ALL=(ALL) ALL
 or
 echo 'rfrolow ALL=(ALL) ALL' >> /etc/sudoers
 
@@ -437,3 +437,11 @@ cave resolve firefox --purge '*/*'
 http://paludis.exherbo.org/clients/cave-resolve.html
 
 http://paludis.exherbo.org/clients/cave-purge.html
+
+== cave uninstalls /opt
+
+qu7uux | wow, I wanted to uninstall libjpeg-turbo, and since it was the only thing in /opt, paludis wanted to delete /opt, which is unfortunately a separate partition... Should x impulze
+       | paludis be able to uninstall directories in / ?                                                                                                                         x Ingmar
+  zlin | yes                                                                                                                                                                     x inty
+  zlin | it may be that it could handle its failure to do so more gracefully though. maybe ask in #paludis                                                                       x io2
+  zlin | the quick workaround is to touch /opt/.keep
