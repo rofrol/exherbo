@@ -17,6 +17,10 @@ cave show fonts/*::installed
     fonts/ubuntu-font-family
     fonts/urw-fonts
 
+=== fc-cache -vf
+
+Do I need 'fc-cache -vf' after installing font?
+
 == Infinality
 
 Those changes were merged to freetype-2.4. http://www.infinality.net/forum/viewtopic.php?f=2&t=235
@@ -57,9 +61,27 @@ http://askubuntu.com/questions/360622/how-to-activate-subpixel-font-hinting-for-
 
 After changing something with eclectic fontconfig, you just need to refresh page to see changes. Right click on text, Inspect element. Then look at tabs Computed > font-family and Fonts, to see what has been choosen.
 
-== Font familys
+== Font famillies
 
 About licences http://lwn.net/Articles/502371/
+
+=== corefonts
+
+Looks very thin. Something is wrong. So instead I do:
+
+----
+eclectic fontconfig enable 30-metric-aliases.conf
+----
+
+and the best alternative is choosen. It seems the best specified in conf is tex-gyre.
+
+But for some fonts there are no alternatives, like Trebuchet, and this font looks skiny. This may help https://wiki.archlinux.org/index.php/MS_Fonts
+
+http://askubuntu.com/questions/897/how-can-i-make-fonts-look-like-they-do-in-windows
+
+Font smoothing, anti-aliasing, and sub-pixel rendering http://www.joelonsoftware.com/items/2007/06/12.html
+
+http://weirdfellow.wordpress.com/2010/07/25/valid-autohinting-hinting-style-options/
 
 === Dejavu
 
@@ -74,8 +96,6 @@ eclectic fontconfig enable 57-dejavu-sans-mono.conf
 === Helvetica
 
 Helvetica looks horible. When I look at it with Gnome Font Viewer, it seems to be bitmap font.
-
-This may help https://wiki.archlinux.org/index.php/MS_Fonts
 
 There is configuration avaialable 30-metric-aliases.conf installed by fontconfig, but it maps helvetica to non-ms fonts:
 
@@ -181,9 +201,8 @@ eclectic fontconfig enable 30-liberation-aliases.conf
 Get location of fonts
 
 ----
-$ xmllint --xpath 'fontconfig/dir[1]/text()[1]' /etc/fonts/fonts.conf
-/usr/share/fonts
-$ grep -r Nimbus /usr/share/fonts/
+$ fc-match Arial | grep 'file:'
+$ fc-match -v Arial | egrep 'file:'
 ----
 
 xmllint comes with libxml2-utils http://stackoverflow.com/questions/15461737/how-to-execute-xpath-one-liners-from-shell

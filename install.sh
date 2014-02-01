@@ -263,10 +263,6 @@ cave resolve tree -x
 #python fails, add
 #labels have changes, or backup ndbam and replace s/build,run/build+run/
 #rm -R /var/cache/paludis/metadata/* &&
-#The 'everything' set is deprecated. Use either 'installed-packages' or 'installed-slots' instead
-##cave resolve installed-packages --dl-upgrade always --continue-on-failure if-independent 2>&1 | tee ${proj}/temp/e.log
-#--suggestions take
-#--dl-reinstall if-use-changed
 
 #adding repo with cave
 #someone mistakenly named file

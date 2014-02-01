@@ -445,3 +445,88 @@ qu7uux | wow, I wanted to uninstall libjpeg-turbo, and since it was the only thi
   zlin | yes                                                                                                                                                                     x inty
   zlin | it may be that it could handle its failure to do so more gracefully though. maybe ask in #paludis                                                                       x io2
   zlin | the quick workaround is to touch /opt/.keep
+
+== package_mask.conf
+
+If you want to mask specifc wersion of package add this to /etc/palidis/package_mask.conf for subversion >= 1.8
+
+----
+dev-scm/subversion[>=1.8]
+----
+
+http://www.exherbo.org/docs/faq.html#package_masked_errors
+
+http://paludis.exherbo.org/configuration/packagemask.html
+
+how to specify versions http://paludis.exherbo.org/configuration/specs.html
+
+== not the best version
+
+If you see sth like:
+
+----
+sys-apps/upower:0::desktop (not the best version)
+----
+
+use explain
+
+----
+--explain sys-apps/upower
+----
+
+Probably you would need to add --permit-old-version to cave resolve:
+
+----
+cave resolve installed-slots -c -Cs --permit-old-version sys-apps/upower
+----
+
+== Update all packages
+
+----
+cave resolve installed-slots -c -Cs
+#--suggestions take
+#--dl-reinstall if-use-changed
+----
+
+or 'world' set, if it's in good condition.
+
+More on sets http://paludis.exherbo.org/configuration/sets.html
+
+
+depclean perform upgrades/downgrades that break deps.
+
+----
+-U '*/*' -d '*/*' -P '*/*'
+----
+
+http://www.reddit.com/r/Gentoo/comments/peo7v/is_paludis_better_than_portage/
+
+
+Maybe add '--permit-old-version */*' For cases when there is newer version but some package requires older.
+
+== show unused/insecure packages
+
+----
+cave report
+----
+
+http://www.reddit.com/r/Gentoo/comments/peo7v/is_paludis_better_than_portage/
+
+== Unsuitable candidates
+
+Probably package moved to another repository
+
+Look for the package in output of:
+
+----
+cave report
+----
+
+== stick to specific veresion of package
+
+in /etc/paludis/package_mask.conf add i.e.:
+
+----
+sys-kernel/linux-headers[<3.11.4]
+sys-kernel/linux-headers[>3.11.4]
+----
