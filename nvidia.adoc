@@ -1,4 +1,10 @@
+----
 echo "x11-server/xorg-server xinerama" >> /etc/paludis/options.conf
 cave resolve nvidia-drivers -x
 eclectic ld set bfd
 eclectic opengl set nvidia-drivers
+nvidia-xconfig
+----
+
+https://help.ubuntu.com/community/BinaryDriverHowto/Nvidia
+

@@ -483,7 +483,8 @@ cave resolve installed-slots -c -Cs --permit-old-version sys-apps/upower
 == Update all packages
 
 ----
-cave resolve installed-slots -c -Cs
+#cave resolve installed-slots -c -Cs
+cave resolve installed-slots -c -Ci
 #--suggestions take
 #--dl-reinstall if-use-changed
 ----
@@ -493,7 +494,7 @@ or 'world' set, if it's in good condition.
 More on sets http://paludis.exherbo.org/configuration/sets.html
 
 
-depclean perform upgrades/downgrades that break deps.
+=== depclean perform upgrades/downgrades that break deps.
 
 ----
 -U '*/*' -d '*/*' -P '*/*'
@@ -501,6 +502,7 @@ depclean perform upgrades/downgrades that break deps.
 
 http://www.reddit.com/r/Gentoo/comments/peo7v/is_paludis_better_than_portage/
 
+== permit old versions
 
 Maybe add '--permit-old-version */*' For cases when there is newer version but some package requires older.
 
@@ -530,3 +532,25 @@ in /etc/paludis/package_mask.conf add i.e.:
 sys-kernel/linux-headers[<3.11.4]
 sys-kernel/linux-headers[>3.11.4]
 ----
+
+== Show verbose info about package
+
+i.e.
+
+----
+cave show -c dev-lang/v8
+----
+
+== glibc fails building
+
+I had to comment this in ~/.bash_profile:
+
+----
+#export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$ORACLE_HOME/lib"
+----
+
+== [  601.818522] mce: [Hardware Error]: Machine check events logged
+
+It's not a hardware error and that kernelpatch just removed those messages.
+
+http://www.linuxquestions.org/questions/slackware-14/dmesg-hardware-error-machine-check-events-logged-4175432366/
