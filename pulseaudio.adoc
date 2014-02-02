@@ -1,0 +1,18 @@
+== alsamixer - Permission denied
+
+When the PulseAudio ALSA plugins are active, you must explicitly specify your hardware device in alsamixer (marked in
+blue above), otherwise it will open the PulseAudio mixer.
+My main soundcard
+
+----
+alsamixer -Dhw
+----
+
+My usb Microphone
+
+----
+alsamixer -Dhw:1
+----
+
+
+https://forums.gentoo.org/viewtopic-t-789181-start-0.html
