@@ -554,3 +554,42 @@ I had to comment this in ~/.bash_profile:
 It's not a hardware error and that kernelpatch just removed those messages.
 
 http://www.linuxquestions.org/questions/slackware-14/dmesg-hardware-error-machine-check-events-logged-4175432366/
+
+== removing gnome
+
+show packages from gnome set (light green - installed currently), then remove gnome-desktop etc.
+
+----
+cave show gnome
+cave uninstall gnome-desktop/gnome-desktop --remove-if-dependent 'gnome-desktop/*' --purge '*/*' -x
+cave uninstall gnome-desktop/gnome-themes-standard -x
+cave uninstall gnome-desktop/gnome-bluetooth -x
+cave uninstall gnome-desktop/seahorse --purge '*/*' -x
+----
+
+Now the same wit gnome-platform
+
+----
+cave show 'gnome-platform/*::installed'
+cave uninstall gnome-platform/libgnome --remove-if-dependent '*/*' --purge '*/*' -x
+----
+
+Anything left with gnome in name?
+
+----
+cave show '*/*::installed' | grep gnome
+----
+
+Now let's purge all unnecessary packages/add needed to world set.
+
+----
+cave purge
+cave update-world dev-lang/ruby net-libs/webkit
+cave purge -x
+----
+
+Fix linkage
+
+----
+cave fix-linkage -x
+----
