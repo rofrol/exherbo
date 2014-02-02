@@ -1,0 +1,105 @@
+== install
+
+----
+cave resolve dwm -x
+----
+
+another usefull programms:
+
+* dmenu - helper to execute command with alt+p
+* setxkbmap - set keyboard map
+* xsetroot - set statusbar text
+* acpi - get information about ACPI devices like battery thermal info.
+
+== .xinitrc
+
+https://github.com/rofrol/.configs/blob/master/.xinitrc
+
+== modes
+
+alt+t tiling, you will see []= in status
+alt+f floating, you will see ><>
+alt+m monocle - one maximized window at a time
+alt+space move to previous mode
+
+== tags
+
+tags are like workspaces
+
+alt+<num> switch to tag
+shift+alt+<num> move window to tag
+
+<num> is 1..9
+
+when you toggle tags you’re just asking to see the exact same windows with different content.
+
+http://web.archive.org/web/20120120161931/http://lubutu.com/rant/dwm-faq
+
+== windows
+
+alt+left_click move window
+alt+right_click resize window
+
+moving or resizing switches window to floating mode.
+
+alt+middle_click switch window to titling mode
+
+== tiling
+
+alt+enter toggles window between master and stack
+alt+j previous window
+alt+k next window
+alt+h shrink current window
+alt+l grow current window
+
+=== increasing/decreasing master
+
+Let's assume the we have opened 3 windows. One window is master and other stacked.
+
+1. alt+d 0 master, windows layed horizontally
+2. alt+i 1 master, windows in master+stack mode
+3. alt+i 2 masters, windows layed horizontally
+4. alt+i 3 masters, windows layed horizontally
+5. alt+i 4 masters, windows layed horizontally
+
+Now to get back to one master, we have to press alt+d 3 times.
+
+Number of masters is applied to all tags.
+
+http://unix.stackexchange.com/questions/65889/how-do-i-get-rid-of-horizontal-split-in-dwm
+
+http://web.archive.org/web/20120120161931/http://lubutu.com/rant/dwm-faq
+
+== other shortcuts
+
+alt+p dmenu
+shift+alt+c close current window
+shift+alt+q gracefully quit dwm
+alt+b toggle status
+alt+shift+enter start a shell (xterm)
+
+== gimp
+
+gimp starts in floating mode automatically.
+
+http://comments.gmane.org/gmane.comp.misc.suckless/10138
+
+But doesn't occupy whole space. Resize it and on next run, it should.
+
+== links
+
+http://dwm.suckless.org/
+
+http://dwm.suckless.org/tutorial
+
+https://wiki.archlinux.org/index.php/dwm
+
+https://wiki.gentoo.org/wiki/Dwm
+
+https://wiki.debian.org/Dwm
+
+http://linuxbbq.org/wiki/index.php?title=Dwm
+
+Show off your Dwm configuration! https://bbs.archlinux.org/viewtopic.php?pid=1377002
+
+Howto: dwm configuration and installation http://forums.debian.net/viewtopic.php?f=16&t=65110I
