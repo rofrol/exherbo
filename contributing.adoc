@@ -1,0 +1,28 @@
+== someone posted patch, how to add it to repository
+
+Let's assume the patch is for games repo.
+
+clone repo as described here https://galileo.mailstation.de/?p=225
+
+create new branch in repo, apply patch http://ariejan.net/2009/10/26/how-to-create-and-apply-a-patch-with-git/
+
+----
+git apply some.patch
+----
+
+Add info about your local repo to /etc/paludis/repositories/games.conf http://exherbo.org/docs/workflow.html
+
+----
+format = e
+location = /var/db/paludis/repositories/games
+sync = git://git.exherbo.org/games.git local: git+file:///home/rfrolow/projects/exherbo/games
+sync_options = --branch=master local: --branch=ioquake3
+----
+
+Add any new categories that were added by patch to /path/to/loca/games/metadata/categories.conf
+
+Sync your changes with paludis
+
+----
+cave sync --suffix local games
+----
