@@ -65,7 +65,7 @@ After changing something with eclectic fontconfig, you just need to refresh page
 
 About licences http://lwn.net/Articles/502371/
 
-=== corefonts
+=== corefonts aka ms fonts
 
 Looks very thin. Something is wrong. So instead I do:
 
@@ -75,7 +75,9 @@ eclectic fontconfig enable 30-metric-aliases.conf
 
 and the best alternative is choosen. It seems the best specified in conf is tex-gyre.
 
-But for some fonts there are no alternatives, like Trebuchet, and this font looks skiny. This may help https://wiki.archlinux.org/index.php/MS_Fonts
+But for some fonts there are no alternatives, like Trebuchet, and this font looks skiny.
+
+On some websites, font is specified as 'Times' etc. In those cases additional aliases needs to be enabled. https://wiki.archlinux.org/index.php/MS_Fonts
 
 http://askubuntu.com/questions/897/how-can-i-make-fonts-look-like-they-do-in-windows
 
