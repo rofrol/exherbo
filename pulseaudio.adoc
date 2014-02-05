@@ -1,4 +1,103 @@
-== alsamixer - Permission denied
+== test sound
+
+----
+speaker-test -Dhw -c 2
+----
+
+== Failed to create secure directory (/run/user/1000/pulse): Permission denied
+
+It can happen when you run alsamixer as root, but you are logged to Xorg as normal user?
+
+1000 is my user's id
+
+----
+# id -u rfrolow
+1000
+----
+
+----
+chown -R rfrolow:rfrolow /run/user/1000
+----
+
+http://mail.kde.org/pipermail/amarok-devel/2013-December/012891.html
+
+== no sound
+
+Should users be in the "audio" group? http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/PerfectSetup/
+
+----
+sudo killall -9 pulseaudio
+chown -R rfrolow:rfrolow /run/user/1000
+----
+
+After running alasamixer as root, main volume could'b be muted.
+
+Run alsamixer or pavucontrol and unmute. If you have run
+
+----
+alsamixer -Dhw
+----
+
+switch witch F6 to default and unumte.
+
+== Starting pulseaudio
+
+Don't start pulseaudio like this
+
+----
+pulseaudio -D
+----
+
+It will be run automatically.
+
+https://wiki.archlinux.org/index.php/PulseAudio#Daemon_already_running
+
+== restart pulseaudio
+
+In a standard setup running 'pulseaudio -k' restarts the daemon.
+
+http://askubuntu.com/questions/15223/how-can-i-restart-pulseaudio-without-logout
+
+== Pulseaudio check
+
+----
+pulseaudio --check
+----
+
+== don't run pulseaudio as a system service for multiuser machine
+
+http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/WhatIsWrongWithSystemWide/
+
+== lsmod doesn't show any snd
+
+----
+lsmod | grep snd
+lsmod | grep '^snd' | column -t
+----
+
+Maybe your sound driver isn't a module?
+
+----
+zgrep -i "^[^#]*snd" /proc/config.gz
+----
+
+== pulseaudio command line
+
+----
+man pulse-cli-syntax
+----
+
+== remember volume level
+
+It looks like it's handled by systemd service alsa-state.service.
+
+== Pulseaudio was built without libcap support
+
+When starting daemon you can get this message
+
+https://bugzilla.redhat.com/show_bug.cgi?id=969232
+
+== alsamixer - select device
 
 When the PulseAudio ALSA plugins are active, you must explicitly specify your hardware device in alsamixer (marked in
 blue above), otherwise it will open the PulseAudio mixer.
@@ -14,5 +113,36 @@ My usb Microphone
 alsamixer -Dhw:1
 ----
 
-
 https://forums.gentoo.org/viewtopic-t-789181-start-0.html
+
+== Links
+
+http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/
+
+http://freedesktop.org/software/pulseaudio/pavucontrol/
+
+http://freedesktop.org/software/pulseaudio/paprefs/
+
+https://wiki.archlinux.org/index.php/PulseAudio
+
+https://wiki.archlinux.org/index.php/Advanced_Linux_Sound_Architecture
+
+http://wiki.gentoo.org/wiki/PulseAudio
+
+http://en.wikibooks.org/wiki/Configuring_Sound_on_Linux/Pulse_Audio/Testing
+
+http://fedoraproject.org/wiki/How_to_debug_PulseAudio_problems
+
+https://wiki.ubuntu.com/PulseAudio
+
+http://mpd.wikia.com/wiki/PulseAudio
+
+https://wiki.debian.org/en/PulseAudio
+
+http://en.opensuse.org/SDB:Audio_troubleshooting
+
+http://en.opensuse.org/SDB:Pulseaudio
+
+http://alsa.opensrc.org/Proc_asound_documentation
+
+http://jan.newmarch.name/LinuxSound/Sampled/PulseAudio/
