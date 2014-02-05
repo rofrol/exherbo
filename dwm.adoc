@@ -86,6 +86,12 @@ http://comments.gmane.org/gmane.comp.misc.suckless/10138
 
 But doesn't occupy whole space. Resize it and on next run, it should.
 
+== customization
+
+http://dwm.suckless.org/customisation/
+
+http://rhunter.org/blog/2012/04/17/dwm-a-tutorial-for-beginners/
+
 == links
 
 http://dwm.suckless.org/
