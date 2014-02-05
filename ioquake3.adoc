@@ -1,0 +1,50 @@
+== widescreen
+
+get your resolution
+
+----
+xrandr
+----
+
+then in ~/.q3a/baseq3/q3config.cfg
+
+----
+seta r_mode "-1"
+seta r_customwidth "1366"
+seta r_customheight "768"
+----
+
+When in game, you have to also run
+
+----
+vid_restart
+----
+
+You can also set to use you desktop resolution
+
+----
+seta r_mode "-2"
+----
+
+http://ioquake3.org/help/
+
+== fullscreen
+
+----
+seta r_fullscreen "1"
+----
+
+== opengl
+
+----
+ioquake3_opengl2
+----
+
+== other
+
+----
+cg_fov 120
+cg_drawgun 0
+cg_drawfps 1
+bot_nochat 1
+----
