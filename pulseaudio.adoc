@@ -4,6 +4,10 @@
 speaker-test -Dhw -c 2
 ----
 
+== alsamixer how-to
+
+http://en.wikipedia.org/wiki/Alsamixer
+
 == Failed to create secure directory (/run/user/1000/pulse): Permission denied
 
 It can happen when you run alsamixer as root, but you are logged to Xorg as normal user?
@@ -32,13 +36,13 @@ chown -R rfrolow:rfrolow /run/user/1000
 
 After running alasamixer as root, main volume could'b be muted.
 
-Run alsamixer or pavucontrol and unmute. If you have run
+Run alsamixer or pavucontrol and unmute.
 
 ----
-alsamixer -Dhw
+amixer -D pulse set Master 1+ unmute
 ----
 
-switch witch F6 to default and unumte.
+http://askubuntu.com/questions/118675/mute-key-mutes-alsa-and-pulseaudio-but-unmutes-only-alsa
 
 == Starting pulseaudio
 
@@ -116,6 +120,8 @@ alsamixer -Dhw:1
 https://forums.gentoo.org/viewtopic-t-789181-start-0.html
 
 == Links
+
+http://www.freedesktop.org/wiki/Software/PulseAudio/FAQ/
 
 http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/
 
