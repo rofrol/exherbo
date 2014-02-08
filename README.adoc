@@ -596,7 +596,11 @@ cave fix-linkage -x
 
 == Can't locate Error.pm in @INC (you may need to install the Error module)
 
-I got this error when running 'git difftool'. It's because I didn't have 'dev-perl/Error' installed. It's a suggestion for 'dev-scm/git'.
+I got this error when running 'git difftool'. It's because I didn't have perl Error module installed. dev-perl/Error a suggestion for 'dev-scm/git', but cpan's module are more recent, so let's install it with cpan:
+
+----
+cpan Error
+----
 
 This will test if you have perl module installed.
 
