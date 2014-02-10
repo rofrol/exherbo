@@ -1,0 +1,27 @@
+== Why do I get log messages on my console?
+
+Either add loglevel=3 or quiet to your kernel parameters.
+
+== How to power off or reboot machine?
+
+'systemctl poweroff' or 'systemctl reboot'
+
+== How to get current boot log
+
+----
+journactl -b
+----
+
+Only errors
+
+----
+journalctl -b -p err
+----
+
+http://0pointer.de/blog/projects/journalctl.html
+
+== Links
+
+https://wiki.archlinux.org/index.php/Systemd_FAQ
+
+Many links http://www.freedesktop.org/wiki/Software/systemd/
