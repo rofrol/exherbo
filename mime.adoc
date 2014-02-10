@@ -1,0 +1,59 @@
+== query file type
+
+----
+xdg-mime query filetype <filepath>
+----
+
+== set default
+
+set to any desktop file in /usr/share/applications/
+
+----
+xdg-mime default mpv.desktop video/x-flv
+----
+
+When default app isn't set, it tries to open it in web browser.
+
+Some env vars may cause xdg-open to behave different https://wiki.archlinux.org/index.php/Environment_Variables
+
+https://wiki.archlinux.org/index.php/Default_Applications
+
+https://wiki.archlinux.org/index.php/xdg-open
+
+== set global list from your current list
+
+----
+sudo cp ~/.local/share/applications/defaults.list /usr/share/applications/defaults.list
+----
+
+Is there any other way to set global?
+
+== open file with default app
+
+----
+xdg-open <filepath>
+----
+
+== Mimeinfo
+
+----
+cave resolve File-MimeInfo -x
+----
+
+get type of filename (file.ext doesn't have to be existing file, it can be just string)
+
+----
+mimetype file.ext
+----
+
+description
+
+----
+mimetype -d file.ext
+----
+
+open
+
+----
+mimeopen <filepath>
+----
