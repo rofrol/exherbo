@@ -1,0 +1,46 @@
+= mpd
+
+mkdir -p ~/.mpd/playlists
+
+cat > ~/.mpdconf <<EOF
+music_directory		"~/music"
+playlist_directory		"~/.mpd/playlists"
+db_file			"~/.mpd/database"
+log_file			"~/.mpd/log"
+pid_file			"~/.mpd/pid"
+state_file			"~/.mpd/state"
+sticker_file			"~/.mpd/sticker.sql"
+auto_update	"yes"
+input {
+        plugin "curl"
+}
+audio_output {
+       type		"pulse"
+       name		"Local Music Player Daemon"
+       server		"127.0.0.1"
+}
+filesystem_charset		"UTF-8"
+id3v1_encoding			"UTF-8"
+EOF
+
+cat > ~/.ncmpcpp/config <<EOF
+mpd_music_dir = "~/music"
+EOF
+
+in /etc/pulse/default.pa
+load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1
+
+$ pulseaudio --kill
+
+https://wiki.archlinux.org/index.php/Music_Player_Daemon/Tips_and_Tricks#Local_.28with_separate_mpd_user.29
+
+== Create database
+
+mpd --create-db or press 'u' inside ncmpcpp
+
+https://wiki.archlinux.org/index.php/Mpd
+
+== Client and Server
+
+$ mpd
+$ ncmpcpp

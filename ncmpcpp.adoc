@@ -1,0 +1,61 @@
+= ncmpcpp
+
+== Sorting in playlist
+
+2
+Ctrl-v
+arrow up down to highlight
+m or n to move
+Sort
+
+== Tag editor
+
+7
+y - single save toggle
+Enter - to edit
+Save - in the middle column
+
+== Tiny tag editor
+
+Press 'e' in the browser or playlist.
+'y' to save
+
+https://bbs.archlinux.org/viewtopic.php?id=113208
+
+== Add all to playlist
+
+a
+/
+Enter
+
+https://bbs.archlinux.org/viewtopic.php?pid=1033816
+
+== display mode
+
+in ~/.ncmpcpp
+
+----
+playlist_display_mode = "columns"
+browser_display_mode = "columns"
+----
+
+== playing mode
+
+press '\' to see alternate user interface
+
+r - toggle repeat
+s - toggle single
+
+https://wiki.archlinux.org/index.php/ncmpcpp
+
+== config
+
+http://dotshare.it/category/mpd/ncmpcpp/
+
+http://dotshare.it/dots/639/
+
+== delete file from disk when on playlist
+
+enable deleting in config
+G to jump to browse
+d to delete
