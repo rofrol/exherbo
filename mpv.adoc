@@ -1,0 +1,5 @@
+mpv doesn't work with smplayer. the problem is mpv hasn't a slave mode anymore or it's broken. they are working on a replacement for the slave mode.
+
+compile with lua to have basic On Screen Controller. It shows up when you move mouse.
+
+You can use Shift+q in mpv to save the current position and quit
