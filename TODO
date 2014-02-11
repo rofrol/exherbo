@@ -1,0 +1,3 @@
+have /var/tmp/paludis/build as a tmpfs
+
+Having all /vat/tmp as tmpfs could break your system, because some programs assume it is persistent during reboots.
