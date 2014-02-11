@@ -14,8 +14,6 @@ xdg-mime default mpv.desktop video/x-flv
 
 When default app isn't set, it tries to open it in web browser.
 
-Some env vars may cause xdg-open to behave different https://wiki.archlinux.org/index.php/Environment_Variables
-
 https://wiki.archlinux.org/index.php/Default_Applications
 
 https://wiki.archlinux.org/index.php/xdg-open
@@ -34,7 +32,37 @@ Is there any other way to set global?
 xdg-open <filepath>
 ----
 
-== Mimeinfo
+Some env vars may cause xdg-open to behave different https://wiki.archlinux.org/index.php/Environment_Variables
+
+xdg-open detect Gnome and then calls
+
+----
+gnome-open ~
+----
+
+You can do
+
+----
+sh -x /usr/bin/xdg-open ~
+----
+
+to see what the script does to perform the requested action.
+
+It seems that the reason for differences between xdg-open behavior on different desktops is that xdg does not use it's own database but updates the databases of the desktop.
+
+http://ubuntuforums.org/showthread.php?t=1108776&p=6971845#post6971845
+
+== .desktop
+
+http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+
+== Alternatives
+
+https://github.com/wor/pyxdg-open
+
+https://wiki.archlinux.org/index.php/Xdg-open#xdg-open_replacements
+
+=== Mimeinfo
 
 ----
 cave resolve File-MimeInfo -x
