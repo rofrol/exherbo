@@ -26,3 +26,11 @@ Sync your changes with paludis
 ----
 cave sync --suffix local games
 ----
+
+== build fails
+
+09:48:46          qu7uux | Philantrop: are the build failures in what I just commited because I separated the licence needed by 662 ?
+10:00:15      Guest22754 | qu7uux: It seems so. commit those two packages together
+10:03:54          rofrol | qu7uux: If you look at jenkins log, you can see it yourself: Found no packages ...
+10:05:28           nicoo | Guest58216: It isn't apparent that commiting both exhereses together would solve anything.
+10:06:12           nicoo | qu7uux: By the way, if you use git-review, sending a branch for review creates one proposal per commit, with each commit depending on the previous ones.
