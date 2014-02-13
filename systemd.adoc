@@ -20,6 +20,14 @@ journalctl -b -p err
 
 http://0pointer.de/blog/projects/journalctl.html
 
+== cron
+
+it's much better than cron: http://www.reddit.com/r/linux/comments/17i54k/systemd_to_implement_cronlike_functionality/c866u1o
+
+run a backup script 10 minutes after booting up my machine but only once a day http://unix.stackexchange.com/questions/48203/run-script-once-a-day-with-systemd
+
+And there is even migration from cron to systemd going on in fedora https://fedoraproject.org/wiki/User:Johannbg/Systemd/cron-migration
+
 == Links
 
 https://wiki.archlinux.org/index.php/Systemd_FAQ
