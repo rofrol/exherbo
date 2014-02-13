@@ -20,6 +20,8 @@ function log {
 # http://askubuntu.com/questions/175514/how-to-set-java-home-for-openjdk
 
 #download jdk
+#If it's bin, just run it and the directory will appear.
+
 fullfile="$1"
 #tar xf "$fullfile" -C /usr/lib64
 #cd /usr/lib64/jdk*/bin
