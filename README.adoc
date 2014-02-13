@@ -609,3 +609,11 @@ perl -e 'use Error;'
 ----
 
 http://alvinalexander.com/blog/post/perl/checking-testing-perl-module-in-inc-include-path
+
+== uninstall set
+
+----
+cave uninstall $(cave print-packages <set>)
+cave update-world -r <set>
+----
+
