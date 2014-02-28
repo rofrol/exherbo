@@ -617,3 +617,12 @@ cave uninstall $(cave print-packages <set>)
 cave update-world -r <set>
 ----
 
+== gcc version
+
+14:27:23      Philantrop | Caelian: Rule of thumb - if there's a new gcc slot, switch to it.
+
+== check deps of a binary
+
+readelf -d /usr/bin/pulseaudio" says it neets libltdl.so.7
+
+ldd ?
