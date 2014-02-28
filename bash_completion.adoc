@@ -1,0 +1,38 @@
+list completions
+
+----
+complete -P
+----
+
+remove completion
+
+----
+complete -r rm
+----
+
+== Example
+
+----
+_mut()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="--nologfile --offline --help"
+
+    if [[ ${cur} == -* ]] ; then
+        COMPREPLY=( $(compgen -S " " -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+}
+complete -o default -F _mut mut
+----
+
+== Links
+
+http://www.debian-administration.org/article/An_introduction_to_bash_completion_part_1
+
+Add spaces between options http://stackoverflow.com/questions/3238983/writing-a-custom-bash-completion-rule?rq=1#comment3352374_3239570
+
+Complete file without space before http://unix.stackexchange.com/questions/55520/create-bash-completion-script-to-autocomplete-paths-after-is-equal-sign
