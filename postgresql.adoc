@@ -1,0 +1,200 @@
+= PostgreSQL
+
+== Install
+
+as su
+
+----
+mkdir -p /var/lib/postgresql/data/
+chown -R postgres:postgres /var/lib/postgresql
+su - postgres
+initdb -D /var/lib/postgresql/data/
+----
+
+as su again
+
+----
+systemctl start postgresql
+systemctl enable postgresql
+----
+
+== Create user
+
+"One way to ensure that your users and data can be separated if necessary is to assign a distinct role for each application."
+
+----
+$ su - postgres
+$ createuser --interactive
+Enter name of role to add: username
+Shall the new role be a superuser? (y/n) n
+Shall the new role be allowed to create databases? (y/n) y
+Shall the new role be allowed to create more new roles? (y/n) n
+----
+
+http://dba.stackexchange.com/questions/17790/created-user-can-access-all-databases-in-postgresql-without-any-grants
+
+https://www.digitalocean.com/community/articles/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2
+
+https://www.digitalocean.com/community/articles/how-to-secure-postgresql-on-an-ubuntu-vps
+
+http://www.postgresql.org/docs/9.0/static/user-manag.html
+
+== Create db for your user
+
+By default, postgres tries to connect to a database with the same name as your user. Without it you you possibly won't be able to run queries.
+
+So create database with the name as your user by running createdb and list databases
+
+----
+createdb
+psql -c "\list"
+----
+
+http://stackoverflow.com/questions/17633422/psql-fatal-database-user-does-not-exist
+
+== Create db
+
+----
+createdb dbname
+psql -d dbname
+dbname=> \l
+dbname=> \du
+----
+
+Other commands
+
+----
+DROP TABLE IF EXISTS table_name;
+CREATE TABLE IF NOT EXISTS table_name;
+DROP TABLE table_name CASCADE;
+DROP TABLE IF EXISTS table_name CASCADE;
+----
+
+http://stackoverflow.com/questions/18389124/simulate-create-database-if-not-exists-for-postgresql
+
+== Security
+
+=== No password prompt for superuser
+
+I use ident in dev, md5 in production.
+
+you never want to set the password for UNIX account "postgres" http://serverfault.com/questions/110154/whats-the-default-superuser-username-password-for-postgres-after-a-new-install
+
+----
+sudo -u postgres psql postgres
+# \password postgres
+Enter new password:
+----
+
+hpa_file
+
+----
+psql -U postgres -qAt -c "show hba_file" | xargs grep -v -E '^[[:space:]]*#'
+----
+
+Order of entries matters: a record specifying trust authentication for connections from 127.0.0.1 would appear before a record specifying password authentication for a wider range of allowed client IP addresses. http://serverfault.com/questions/112837/enable-both-ident-and-md5-authentication-in-postgresql
+
+pg_ctl supports reloading cluster (configuration) without disconnecting users.
+
+after all modifications of pg_hba.conf file (and files used by this file) you have to do `pg_ctl reload` http://www.depesz.com/2007/08/18/securing-your-postgresql-database/
+
+Flags explanation: -E to preserve PGDATA, -i to login even when there is no home dir created for postgres user
+
+----
+export PGDATA=/var/lib/postgresql/data
+sudo -E -i -u postgres pg_ctl -D $PGDATA reload
+----
+
+or if you have in systemd's postgresql.service this line https://projects.archlinux.org/svntogit/packages.git/tree/trunk/postgresql.service?h=packages/postgresql
+
+----
+ExecReload=/usr/bin/pg_ctl -s -D ${PGDATA} reload
+----
+
+You can just
+
+----
+systemctl reload postgresql
+----
+
+
+http://stackoverflow.com/questions/11949959/no-password-prompt-for-postgresql-superuser
+
+http://www.depesz.com/2007/08/18/securing-your-postgresql-database/
+
+http://serverfault.com/questions/112837/enable-both-ident-and-md5-authentication-in-postgresql
+
+http://www.kelvinwong.ca/2012/02/09/install-webby-postgres-8-4-on-centos-6-2/
+
+http://www.postgresql.org/docs/9.3/static/auth-pg-hba-conf.html
+
+http://www.postgresql.org/docs/9.3/static/auth-methods.html
+
+http://wiki.postgresql.org/wiki/Shared_Database_Hosting
+
+=== Other
+
+http://dba.stackexchange.com/questions/17790/created-user-can-access-all-databases-in-postgresql-without-any-grants
+
+http://dba.stackexchange.com/questions/35316/why-is-a-new-user-allowed-to-create-a-table
+
+
+https://www.digitalocean.com/community/articles/how-to-secure-postgresql-on-an-ubuntu-vps
+
+http://security.stackexchange.com/questions/2517/postgresql-security-audit
+
+https://www.ibm.com/developerworks/library/os-postgresecurity/
+
+== Init
+
+init.sql
+
+----
+SET CLIENT_ENCODING TO UTF8;
+SET STANDARD_CONFORMING_STRINGS TO ON;
+BEGIN;
+
+DROP TABLE IF EXISTS tube;
+create table tube (
+  lat float8,
+  lng float8,
+  geom_4326 geometry(Point,4326),
+  name varchar,
+  id serial primary key
+);
+COMMIT;
+----
+
+run sql
+
+----
+psql -U username -d dbname -a -f init.sql
+----
+
+http://blog.clement.delafargue.name/posts/2013-03-16-install-postgresql-with-systemd-on-exherbo.html
+
+https://wiki.archlinux.org/index.php/PostgreSQL
+
+https://wiki.gentoo.org/wiki/PostgreSQL
+
+https://wiki.gentoo.org/wiki/PostgreSQL/QuickStart
+
+http://www.postgresql.org/docs/9.3/static/app-initdb.html
+
+http://wiki.postgresql.org/wiki/Detailed_installation_guides
+
+http://www.postgresql.org/docs/9.3/static/tutorial.html
+
+http://stackoverflow.com/questions/9736085/run-a-postgresql-sql-file-using-command-line-args
+
+== psql cheatsheet
+
+\? - list meta-commands
+
+\l or \list - list all databases
+
+\dt - lists all tables in the current database
+
+\d - show all tables, views, and sequences
+
+http://dba.stackexchange.com/questions/1285/how-do-i-list-all-databases-and-tables-using-psql
