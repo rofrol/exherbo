@@ -626,3 +626,9 @@ cave update-world -r <set>
 readelf -d /usr/bin/pulseaudio" says it neets libltdl.so.7
 
 ldd ?
+
+== Firefox and h264
+
+10:20:10          mrothe | so I am pretty sure the only way to get h264 working is installing gst-plugins-good and gst-ffmpeg (maybe in addition to gst-plugins-base, but that is a dependency of gst-plugins-good)
+10:42:57      pyromaniac | fx 30 or so will get gstreamer 1.x
+
