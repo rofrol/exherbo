@@ -18,4 +18,5 @@ To update env run:
 
 source /etc/profile
 printenv JAVA_HOME
+java -version
 !
