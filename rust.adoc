@@ -1,0 +1,4 @@
+----
+echo "dev-lang/rust scm" >> /etc/paludis/package_unmask.conf
+cave resolve rust[~scm] -x
+----
