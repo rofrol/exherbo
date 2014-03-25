@@ -632,3 +632,16 @@ ldd ?
 10:20:10          mrothe | so I am pretty sure the only way to get h264 working is installing gst-plugins-good and gst-ffmpeg (maybe in addition to gst-plugins-base, but that is a dependency of gst-plugins-good)
 10:42:57      pyromaniac | fx 30 or so will get gstreamer 1.x
 
+== suggestions.conf and recommendations.conf
+
+17:38:41          rofrol | How can I prevent "cave resolve installed-slots -c -Cs" to install gtk+? Output of cave http://bpaste.net/raw/193545/
+17:40:32          rofrol | It seems that is the chain: systemd -> glib -> glib -> dconf -> gtk+
+17:43:26          rofrol | I got. --explain dconf shows it just a recommendation for glib. So I have uninstalled it
+17:47:32      eternaleye | rofrol: you can use suggestions.conf to prevent it from being pulled in again
+17:47:52      eternaleye | rofrol: dev-libs/glib -whatever/dconf
+17:48:05      eternaleye | rofrol: recommendations are on by default, suggestions are off by default
+17:48:25      eternaleye | rofrol: You can change that with --recommendations show (default is take)
+
+http://paludis.exherbo.org/configuration/suggestions.html
+
+
