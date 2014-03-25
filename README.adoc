@@ -1,7 +1,7 @@
 = Exherbo
 :toc:
 
-== links ==
+== links
 
 * http://www.exherbo.org/docs/exheres-for-smarties.html
 * http://paludis.exherbo.org/configuration/use.html
@@ -9,7 +9,7 @@
 * man cave-resolve
 
 
-== NetworkManager not populating resolv.conf ==
+== NetworkManager not populating resolv.conf
 
 Use following command and answer YES to enable dynamic updates:
 
@@ -17,9 +17,9 @@ Use following command and answer YES to enable dynamic updates:
 
 http://askubuntu.com/questions/137037/networkmanager-not-populating-resolv-conf/172517#172517
 
-== gpg linux kernel ==
+== gpg linux kernel
 
-=== download ===
+=== download
 
   gpg --recv-keys 6092693E
 
@@ -41,23 +41,23 @@ Copy and paste the key into a file, say, kernel.key. Then import it using
 [http://superuser.com/questions/64922/how-to-work-around-blocked-outbound-hkp-port-for-apt-keys]
 [http://www.linuxquestions.org/questions/linux-general-1/how-to-verify-downloaded-kernel-integrity-with-%2A-sign-files-346466/#post1764786]
 
-=== check ===
+=== check
 
   xz -cd linux-3.9.3.tar.xz | gpg --verify linux-3.9.3.tar.sign -
 
-=== no bc ===
+=== no bc
 
   cave resolve -x bc
 
-=== uefi or bios ===
+=== uefi or bios
 
   [ -d /sys/firmware/efi ] && echo UEFI || echo BIOS
 
 [http://askubuntu.com/questions/162564/how-can-i-tell-if-my-system-was-booted-as-efi-uefi-or-bios/162896#162896]
 
-== cave resolve world -cx ==
+== cave resolve world -cx
 
-== glib and python ==
+== glib and python
 dev-libs/glib needs python repo if recommended_tests is set
   cat /var/db/paludis/repositories/arbor/packages/dev-libs/glib/glib-2.36.2.exheres-0
 
@@ -74,7 +74,7 @@ cave resolve repository/python -x
 cave resolve repository/x11 -x
 
 
-=== Cannot proceed without: being reconfigured ===
+=== Cannot proceed without: being reconfigured
 
 I cannot proceed without being permitted to do the following:
 
@@ -86,7 +86,7 @@ u   dev-libs/libxml2:2.0::arbor 2.9.1 to ::installed replacing 2.9.0
 Solution:
 echo "dev-libs/libxml2 python" >> /etc/paludis/options.conf
 
-=== dependency cycle ===
+=== dependency cycle
 
 use --explain
 
@@ -122,11 +122,11 @@ Solution:
 echo "dev-libs/glib build_options: -recommended_tests" >> /etc/paludis/options.conf
 
 
-=== Note about kernel headers ===
+=== Note about kernel headers
 
 maybe after download manualy kernel put it somewhere, so cave won't redownload it?
 
-=== mkdir: cannot create directory '/dev/shm': File exists ===
+=== mkdir: cannot create directory '/dev/shm': File exists
 
 mkdir: cannot create directory '/dev/shm': File exists
 
@@ -147,7 +147,7 @@ sudo chmod 1777 /dev/shm
 
 http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=683103
 
-=== invalid files ===
+=== invalid files
 
 cd /var/cache/paludis/distfiles/
 wget http://ftp.cs.stanford.edu/pub/exim/pcre/pcre-8.32.tar.bz2
@@ -160,18 +160,18 @@ wget http://gitorious.org/procps/procps/archive-tarball/v3.3.7 -O procps-3.3.7.t
 #this one had to be installed separately
 cave resolve procps -x -1
 
-=== tests failed ===
+=== tests failed
 
 echo "sys-apps-util-linux build_options: -recommended_tests" >> /etc/paludis/options.conf
 echo "gnome-desktop/dconf build_options: -recommended_tests" >> /etc/paludis/options.conf
 echo "net-misc/curl build_options: -recommended_tests" >> /etc/paludis/options.conf
 
-== post install ==
+== post install
 
 cave update-world app-arch/libarchive app-editors/vim app-editors/e4r app-text/wgetpaste net-misc/dhcpcd app-arch/zip sys-boot/grub
 cave purge -x
 
-== backup ==
+== backup
 
 mkdir /mnt/orig
 mount / /mnt/orig -o bind
@@ -184,7 +184,7 @@ mount /mnt/backup/mybackup.squashfs /mnt/squash -o loop
 
 http://unix.stackexchange.com/questions/11028/backup-whole-hard-disk-linux/11086#11086
 
-=== backup stats ===
+=== backup stats
 
 tar -C /mnt/orig -cf /mnt/backup/mybackup_$(date -I).tar ./
 tar: ./tmp/ssh-Osio7o3EgT/agent.15672: socket ignored
