@@ -1,0 +1,4 @@
+iw dev
+iw dev wlp4s0 scan
+/etc/wpa_supplicant.conf
+systemctl restart dhcpcd
