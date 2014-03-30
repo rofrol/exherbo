@@ -1,0 +1,23 @@
+notify-send in package libnotify. Usage
+
+----
+notify-send "Touchpad on" "Mouse not present"
+----
+
+Installation.
+
+----
+cave resolve libnotify
+----
+
+It will install default notification provider, which is notification-daemon.
+
+To use it outside of GNOME Flashback, create folowing file /usr/share/dbus-1/services/org.gnome.Notifications.service
+
+----
+[D-BUS Service]
+Name=org.freedesktop.Notifications
+Exec=/usr/libexec/notification-daemon
+----
+
+https://wiki.archlinux.org/index.php/Desktop_notifications
