@@ -1,0 +1,263 @@
+# ls + local cur prev words cword split
++ _init_completion -s
++ local exclude flag outx errx inx OPTIND=1
++ getopts n:e:o:i:s flag -s
++ case $flag in
++ split=false
++ exclude+==
++ getopts n:e:o:i:s flag -s
++ COMPREPLY=()
++ local 'redir=@(?([0-9])<|?([0-9&])>?(>)|>&)'
++ _get_comp_words_by_ref -n '=<>&' cur prev words cword
++ local exclude flag i OPTIND=1
++ words=()
++ local cur cword words
++ upargs=()
++ upvars=()
++ local upargs upvars vcur vcword vprev vwords
++ getopts c:i:n:p:w: flag -n '=<>&' cur prev words cword
++ case $flag in
++ exclude='=<>&'
++ getopts c:i:n:p:w: flag -n '=<>&' cur prev words cword
++ [[ 6 -ge 3 ]]
++ case ${!OPTIND} in
++ vcur=cur
++ let 'OPTIND += 1'
++ [[ 6 -ge 4 ]]
++ case ${!OPTIND} in
++ vprev=prev
++ let 'OPTIND += 1'
++ [[ 6 -ge 5 ]]
++ case ${!OPTIND} in
++ vwords=words
++ let 'OPTIND += 1'
++ [[ 6 -ge 6 ]]
++ case ${!OPTIND} in
++ vcword=cword
++ let 'OPTIND += 1'
++ [[ 6 -ge 7 ]]
++ __get_cword_at_cursor_by_ref '=<>&' words cword cur
++ words=()
++ local cword words
++ __reassemble_comp_words_by_ref '=<>&' words cword
++ local exclude i j line ref
++ [[ -n =<>& ]]
++ exclude='=<>&'
++ eval cword=1
+++ cword=1
++ [[ -n =<>& ]]
++ line='ls '
++ (( i=0, j=0 ))
++ (( i < 2 ))
++ [[ 0 -gt 0 ]]
++ ref='words[0]'
++ eval 'words[0]=${!ref}${COMP_WORDS[i]}'
+++ words[0]=ls
++ line=' '
++ [[ 0 == 1 ]]
++ (( i++, j++ ))
++ (( i < 2 ))
++ [[ 1 -gt 0 ]]
++ [[ -n '' ]]
++ ref='words[1]'
++ eval 'words[1]=${!ref}${COMP_WORDS[i]}'
+++ words[1]=
++ line=' '
++ [[ 1 == 1 ]]
++ eval cword=1
+++ cword=1
++ (( i++, j++ ))
++ (( i < 2 ))
++ local i cur cur2 index=3 'lead=ls '
++ [[ 3 -gt 0 ]]
++ [[ -n ls  ]]
++ [[ -n ls ]]
++ cur='ls '
++ (( i = 0 ))
++ (( i <= cword ))
++ [[ 3 -ge 2 ]]
++ [[ ls != \l\s ]]
++ [[ 0 -lt 1 ]]
++ local old_size=3
++ cur=' '
++ local new_size=1
++ index=1
++ (( ++i  ))
++ (( i <= cword ))
++ [[ 1 -ge 0 ]]
++ [[ '' != '' ]]
++ [[ 1 -lt 1 ]]
++ (( ++i  ))
++ (( i <= cword ))
++ [[ -n   ]]
++ [[ ! -n '' ]]
++ cur=
++ [[ 1 -lt 0 ]]
++ local words cword cur
++ _upvars -a2 words ls '' -v cword 1 -v cur ''
++ ((  10  ))
++ ((  10  ))
++ case $1 in
++ [[ -n 2 ]]
++ printf %d 2
++ [[ -n words ]]
++ unset -v words
++ eval 'words=("${@:3:2}")'
+++ words=("${@:3:2}")
++ shift 4
++ ((  6  ))
++ case $1 in
++ [[ -n cword ]]
++ unset -v cword
++ eval 'cword="$3"'
+++ cword=1
++ shift 3
++ ((  3  ))
++ case $1 in
++ [[ -n cur ]]
++ unset -v cur
++ eval 'cur="$3"'
+++ cur=
++ shift 3
++ ((  0  ))
++ [[ -n cur ]]
++ upvars+=("$vcur")
++ upargs+=(-v $vcur "$cur")
++ [[ -n cword ]]
++ upvars+=("$vcword")
++ upargs+=(-v $vcword "$cword")
++ [[ -n prev ]]
++ [[ 1 -ge 1 ]]
++ upvars+=("$vprev")
++ upargs+=(-v $vprev "${words[cword - 1]}")
++ [[ -n words ]]
++ upvars+=("$vwords")
++ upargs+=(-a${#words[@]} $vwords "${words[@]}")
++ ((  4  ))
++ local cur cword prev words
++ _upvars -v cur '' -v cword 1 -v prev ls -a2 words ls ''
++ ((  13  ))
++ ((  13  ))
++ case $1 in
++ [[ -n cur ]]
++ unset -v cur
++ eval 'cur="$3"'
+++ cur=
++ shift 3
++ ((  10  ))
++ case $1 in
++ [[ -n cword ]]
++ unset -v cword
++ eval 'cword="$3"'
+++ cword=1
++ shift 3
++ ((  7  ))
++ case $1 in
++ [[ -n prev ]]
++ unset -v prev
++ eval 'prev="$3"'
+++ prev=ls
++ shift 3
++ ((  4  ))
++ case $1 in
++ [[ -n 2 ]]
++ printf %d 2
++ [[ -n words ]]
++ unset -v words
++ eval 'words=("${@:3:2}")'
+++ words=("${@:3:2}")
++ shift 4
++ ((  0  ))
++ [[ '' == @(?([0-9])<|?([0-9&])>?(>)|>&)* ]]
++ [[ ls == @(?([0-9])<|?([0-9&])>?(>)|>&) ]]
++ local i skip
++ (( i=1 ))
++ (( i < 2 ))
++ [[ '' == @(?([0-9])<|?([0-9&])>?(>)|>&)* ]]
++ i=2
++ (( 1 ))
++ (( i < 2 ))
++ [[ 1 -eq 0 ]]
++ prev=ls
++ [[ -n false ]]
++ _split_longopt
++ [[ '' == --?*=* ]]
++ return 1
++ return 0
++ case "${prev,,}" in
++ false
++ [[ '' == -* ]]
++ [[ ls == @(mk|rm)dir ]]
++ _filedir
++ local i 'IFS=
+' xspec
++ _tilde ''
++ local result=0
++ [[ '' == ~* ]]
++ return 0
++ local -a toks
++ local quoted tmp
++ _quote_readline_by_ref '' quoted
++ [[ '' == \' ]]
++ printf -v quoted %q ''
++ [[ ' == \$ ]]
++ toks=($(
+        compgen -d -- "$quoted" | {
+            while read -r tmp; do
+                # TODO: I have removed a "[ -n $tmp ] &&" before 'printf ..',
+                #       and everything works again. If this bug suddenly
+                #       appears again (i.e. "cd /b<TAB>" becomes "cd /"),
+                #       remember to check for other similar conditionals (here
+                #       and _filedir_xspec()). --David
+                printf '%s\n' $tmp
+            done
+        }
+    ))
+++ compgen -d -- ''\'''\'''
+++ read -r tmp
+++ printf '%s\n' .vim
+++ read -r tmp
+++ printf '%s\n' .configs
+++ read -r tmp
+++ printf '%s\n' tmp
+++ read -r tmp
+++ printf '%s\n' .gem
+++ read -r tmp
+++ printf '%s\n' exherbo
+++ read -r tmp
+++ printf '%s\n' .subversion
+++ read -r tmp
+++ printf '%s\n' .scout
+++ read -r tmp
+++ printf '%s\n' .npm
+++ read -r tmp
+++ printf '%s\n' .pip
+++ read -r tmp
+++ printf '%s\n' .ssh
+++ read -r tmp
+++ printf '%s\n' irclogs
+++ read -r tmp
+++ printf '%s\n' node_modules
+++ read -r tmp
+++ printf '%s\n' mc-solarized-skin
+++ read -r tmp
+++ printf '%s\n' .config
+++ read -r tmp
+++ printf '%s\n' .elinks
+++ read -r tmp
+++ printf '%s\n' VirtualBox-4.3.4
+++ read -r tmp
+++ printf '%s\n' .rust
+++ read -r tmp
+++ printf '%s\n' .cpan
+++ read -r tmp
++ [[ '' != -d ]]
++ xspec=
++ toks+=($( compgen -f -X "$xspec" -- $quoted ))
+++ compgen -f -X '' -- ''\'''\'''
++ [[ -n '' ]]
++ '[' 18 -ne 0 ']'
++ compopt -o filenames
++ COMPREPLY+=("${toks[@]}")
+
+

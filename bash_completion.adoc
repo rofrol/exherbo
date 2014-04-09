@@ -10,6 +10,12 @@ remove completion
 complete -r rm
 ----
 
+remove all completions
+
+----
+complete -r
+----
+
 == Example
 
 ----
@@ -28,6 +34,52 @@ _mut()
 }
 complete -o default -F _mut mut
 ----
+
+== bash completion stopped working for files for many commands
+
+=== workaround
+
+I've looked at /etc/profile and then commented in file /etc/bash/bashrc.d/bash_completion.sh this line:
+
+----
+. /usr/share/bash-completion/bash_completion
+----
+
+== shopt and glob
+
+There can be some problem with shopt. To show all settings regarding glob
+
+----
+shopt | grep glob
+----
+
+I have only extglob set to on, but it seems ok http://stackoverflow.com/questions/17191622/why-would-i-not-leave-extglob-enabled-in-bash http://mywiki.wooledge.org/glob
+
+http://askubuntu.com/questions/33440/tab-completion-doesnt-work-for-commands
+
+=== debug mode
+
+----
+set -x
+ls <TAB>
+set +x
+----
+
+I've save the output to ls_completion.txt
+
+http://ubuntuforums.org/showthread.php?t=1382060&p=10920396#post10920396
+
+== print all definitions
+
+complete -pr which prints all definitions
+
+http://superuser.com/questions/620844/bash-tab-completion-doesnt-work-on-shell-scripts
+
+=== use native bash's completion
+
+you can use M-/ (aka Alt + /) to use bash's native filename completion instead.
+
+http://stackoverflow.com/a/22034013/588759
 
 == Links
 
