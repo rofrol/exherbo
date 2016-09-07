@@ -448,7 +448,7 @@ qu7uux | wow, I wanted to uninstall libjpeg-turbo, and since it was the only thi
 
 == package_mask.conf
 
-If you want to mask specifc wersion of package add this to /etc/palidis/package_mask.conf for subversion >= 1.8
+If you want to mask specifc wersion of package add this to /etc/paludis/package_mask.conf for subversion >= 1.8
 
 ----
 dev-scm/subversion[>=1.8]
