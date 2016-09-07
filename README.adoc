@@ -644,4 +644,6 @@ ldd ?
 
 http://paludis.exherbo.org/configuration/suggestions.html
 
+## Permit downgrade
 
+`cave resolve llvm -x --permit-downgrade 'dev-lang/llvm'
